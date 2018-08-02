@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<link>
+<title>${content.title!}</title>
+<% include("/share/_share_meta.html"){} %>
+<link rel="stylesheet" href="/static/app/css/common.css"/>
+<link rel="stylesheet" href="/static/font-awesome/css/font-awesome.min.css"/>
+<style type="text/css">
+    body {
+        position: relative;
+    }
+
+    .footer {
+        width: 100%;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        color: #fff;
+        text-align: center;
+    }
+
+    #downBut {
+        background: #254467;
+        margin: 0 auto;
+        height: 40px;
+        margin-left: 20px;
+        margin-right: 20px;
+        line-height: 45px;
+        border-radius: 20px;
+        font-size: 16px;
+        position: relative;
+        display: block;
+        height: 45px;
+        background: #3077ba;
+        color: #fff;
+        font-size: 17px;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    #headerThumbnail {
+        margin-left: 6%;
+        margin-right: 5%;
+        float: left;
+        width: 30%;
+        float: left;
+    }
+
+    #mlist {
+        width: 100%;
+        background: #ffffff;
+        /* border: 1px solid #e1e1e1; */
+        overflow: hidden;
+        margin-top: 2%;
+    }
+
+    #mlist .play {
+        background: url(/static/app/img/list_play.png) no-repeat center left #eaedf2;
+        background-size: 8%;
+    }
+
+    #mlist li {
+        font-size: 16px;
+        color: #333333;
+        height: 30px;
+        border-bottom: 1px solid #e1e1e1;
+        padding: 5%;
+        margin: auto;
+        padding-bottom: 4px;
+        white-space: nowrap; /*不换行*/
+        list-style-type: none; /*先去掉黑点*/
+        background: url(/static/app/img/list_pouse.png) no-repeat center left;
+        background-size: 8%;
+        padding-left: 10%; /*图片的宽度，若不设置，图标会被文字覆盖*/
+    }
+
+    .jblog-link-logo-image {
+        padding-top: 3rem;
+        background: url("/static/app/img/head.jpg") no-repeat;
+        background-size: 100% 30%;
+    }
+</style>
+</head>
+<body class="blog-body">
+<header class="x-layout-100">
+    <div class="jblog-link-logo-image">
+        <img src="${param('qiniu_path')}/${content.thumbnail!}" id="headerThumbnail"
+             class="yfh-banner-image"/>
+        <h1 style="width: 90%; margin-left: 1rem; font-size: 60%; font-weight: bold;">${content.title!}</h1>
+        <span style="clear: both; height: 14px; line-height: 14px; font-size: 14px; color: #888;">——${content.summary!}</span>
+    </div>
+</header>
+<div class="x-pull-right x-padding-right-8" style="width: 30px; height: 30px;">
+    <img src="/static/app/img/audio_next.png" onclick="playNext()"/>
+</div>
+<div class="x-pc-width clearfix x-margin-top-1 x-margin-bottom-50">
+    <div class="x-pull-left x-layout-73 blog-sm-left">
+        <div class="x-white-box">
+            <ul id="mlist">
+                <%for(entity in audioList){%>
+                <li>${entityLP.index}、${entity.title!}
+                    <audio
+                            src="${param('qiniu_path')}/${entity.path!}"></audio>
+                </li>
+                <%}%>
+            </ul>
+        </div>
+    </div>
+</div>
+<footer class="footer x-sm-footer">
+    <a type="button" id="downBut"
+       href="${param('download_btn_href')}">${param('download_btn_desc')}</a>
+</footer>
+</body>
+<script type="text/javascript" src="/static/plugins/jquery/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+    var i = 0;
+    $(function () {
+        //点击播放
+        $("#mlist li").click(function () {
+            playFu($(this));
+        });
+    })
+
+    function playNext() {
+        var index = getPlayIndex();
+        if (0 == i && index == -1) {//当前是暂停状态
+            playFu($($("#mlist li")[0]));
+        } else {//播放状态
+            var $li = $($("#mlist li")[i]);
+            if ($li.next().length > 0) {
+                playFu($li.next());
+            } else {
+                playFu($($("#mlist li")[0]));
+            }
+        }
+    }
+
+    function playFu($li) {
+
+        var audio = $li.children('audio')[0];
+        if (audio.paused) {//播放当前,暂停其他
+            if(-1 != getPlayIndex()) {
+                audio.currentTime = 0;
+            }
+            pouseAll($li.siblings());//样式
+            focuseFn($li);//样式
+            //开始播放
+            //audio.load();
+            //播放逻辑，暂停其他所有，只播放当前要求播放的曲目厅
+            audio.play();
+            //为曲目添加播放下一曲事件
+            audio.onended = function () {
+                if ($li.next().length > 0) {
+                    playFu($li.next());
+                } else {
+                    playFu($($("#mlist li")[0]));
+                }
+            }
+        } else {//暂停当前
+            //i= 0;//曲目初始化到开头
+            unFocuseFu($li);
+            audio.pause();
+        }
+        //获取当前序列号
+        var index = getPlayIndex();
+        if (-1 == index) {
+            i = 0;
+        } else {
+            i = index;
+        }
+    }
+    function getPlayIndex() {
+        return ($("#mlist li.play").index());
+    }
+    function pouseAll($lis) {
+        for (j = 0; j < $lis.length; j++) {
+            var $li = $($lis[j])
+            var audio = $li.children('audio')[0];
+            if (!audio.paused) {
+                unFocuseFu($li);
+                audio.pause();
+            }
+        }
+    }
+    function focuseFn($li) {
+        $li.addClass("play");
+    }
+    function unFocuseFu($li) {
+        $li.removeClass("play");
+    }
+</script>
+</html>

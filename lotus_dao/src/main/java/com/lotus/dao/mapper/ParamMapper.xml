@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.dao.mapper.ParamMapper">
+
+    <resultMap id="selectListResult" type="HashMap">
+        <result column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="code" property="code"/>
+        <result column="name" property="name"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <select id="selectList" resultMap="selectListResult">
+        select `id`, `code`, `name`, `remark`, `type` from sys_param
+        <where>
+            <if test="searchKey != null">
+                <bind name="searchKeyPatter" value="'%' + searchKey + '%'"/>
+                `code` like #{searchKeyPatter}
+                OR `name` like #{searchKeyPatter}
+                OR `remark` like #{searchKeyPatter}
+                OR `type` like #{searchKeyPatter}
+            </if>
+        </where>
+        order by `type` ASC, `order_number` ASC, `code` ASC
+    </select>
+
+    <select id="selectByTypeAndCode" resultType="java.lang.String">
+        select name from sys_param
+        where
+        type= #{type, jdbcType=VARCHAR}
+        and code= #{code, jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+</mapper>

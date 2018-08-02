@@ -1,0 +1,47 @@
+<%var jsPart={%>
+<script type="text/javascript">
+    var fileData = {
+        path: '',
+        alt: ''
+    };
+    function doSelectThumbnail(imgId) {
+        layer.open({
+            type: 2,
+            title: '上传图片',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['92%', '90%'],
+            content: '/upload/img',
+            end: function () {
+                if ('' != fileData.path && null != fileData.path) {
+                    $("#" + imgId).attr("src", "${param('qiniu_path')}/" + fileData.path);
+                      $.post('/set/save', {'splashPath':fileData.path, date:new Date}, function (data) {
+                          initAlertify(data.message, 0 == data.errorCode);
+                      }, 'json');
+                }
+            }
+        });
+    }
+
+
+</script>
+<%};%>
+<%var cssPart={%>
+<style type="text/css">
+
+</style>
+<%};%>
+<% layout("/common/layout.html",{position:"设置引导页", jsPart:jsPart, cssPart:cssPart}){ %>
+<div class="container">
+    <img src="${param('qiniu_path')}/${splash!}" class="img-responsive" alt="APP首页" width="304" height="236" id="thumbnail">
+
+    <%if(ShiroMethod.hasPermission("设置引导页-设置")){%>
+    <div class="col-md-4" style="margin: 1% auto;">
+        <button type="button" class="btn btn-primary"
+                onclick="doSelectThumbnail('thumbnail')">上传引导页
+        </button>
+    </div>
+    <%}%>
+</div>
+<% } %>
+

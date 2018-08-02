@@ -1,0 +1,29 @@
+body{
+    position:relative;
+}
+#butDiv{
+    padding-top:5%;
+    position:absolute;
+    width:100%;
+    height:7%;
+    margin-top:-20%;
+    background-color:#FFFFFF;
+}
+#downBut{
+    background:#254467;
+    margin: 0 auto;
+    height: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
+    line-height: 45px;
+    border-radius: 20px;
+    font-size: 16px;
+    position: relative;
+    display: block;
+    height: 45px;
+    background: #3077ba;
+    color: #fff;
+    font-size: 17px;
+    text-align: center;
+    text-decoration:none;
+}

@@ -1,0 +1,48 @@
+<link rel="stylesheet" href="/static/plugins/bootstrapvalidator/css/bootstrapValidator.min.css">
+<script src="/static/plugins/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+<script src="/static/plugins/bootstrapvalidator/js/initValid.js"></script>
+<script type="text/javascript">
+    $(function(){
+        validateFieldUtil({
+            optionValue: {
+                validators: {
+                    notEmpty: {
+                        message: '配置值不能为空'
+                    },
+                    stringLength: {
+                        min: 1,
+                        max: 100,
+                        message: '配置值长度在1到100之间'
+                    }
+                }
+            }
+        }, $('#form2'));
+    });
+
+
+</script>
+<form action="/option/update" method="post" id="form2">
+    <div class="col-sm-12" style="margin: 2% auto;">
+        <input type="hidden" name="id" value="${option.id!}"/>
+        <input type="hidden" name="optionKey" value="${option.optionKey!}"/>
+        <ul class="list-unstyled">
+            <li>
+                <span>配置键:</span>
+                <div class="form-group">${option.optionKey!}</div>
+            </li>
+            <li>
+                <span>配置值:</span>
+                <div class="form-group">
+                    <input class="form-control input-md" type="text" name="optionValue" value="${option.optionValue!}"
+                           placeholder="请输入配置值"/>
+                </div>
+            </li>
+            <li>
+                <span>配置备注:</span>
+                <div class="form-group">
+                    <textarea name="optionRemark" rows="5" maxlength="200" class="form-control">${option.optionRemark!}</textarea>
+                </div>
+            </li>
+        </ul>
+    </div>
+</form>

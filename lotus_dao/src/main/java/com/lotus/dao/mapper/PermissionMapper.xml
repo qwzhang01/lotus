@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.dao.mapper.PermissionMapper">
+
+    <resultMap id="selectByUserIdResult" type="com.lotus.dao.pojo.Permission">
+        <result column="PermissionId" property="permissionid"/>
+        <result column="Menu" property="menu"/>
+        <result column="SubMenu" property="submenu"/>
+        <result column="Operate" property="operate"/>
+        <result column="SortNo" property="sortno"/>
+    </resultMap>
+
+    <select id="selectByUserId" resultMap="selectByUserIdResult">
+        SELECT
+        p.PermissionId,
+        p.Menu,
+        p.SubMenu,
+        p.Operate,
+        p.SortNo
+        FROM
+        auth_role_user ru
+        LEFT JOIN auth_role role ON ru.RoleId = role.RoleId
+        LEFT JOIN auth_permission_role pr ON pr.RoleId = role.RoleId
+        LEFT JOIN auth_permission p ON p.PermissionId = pr.PermissionId
+        WHERE
+        ru.UserId = #{userId, jdbcType=INTEGER}
+    </select>
+
+    <resultMap id="selectByRoleIdResult" type="HashMap">
+        <result column="Menu" property="menu"/>
+        <result column="SubMenu" property="subMenu"/>
+        <result column="PermissionDetail" property="permissionDetail"/>
+        <result column="SortNo" property="sortNo"/>
+    </resultMap>
+
+    <select id="selectByRoleId" resultMap="selectByRoleIdResult">
+        SELECT *,
+        (SELECT ap.SortNo FROM auth_permission ap WHERE ap.SubMenu = B.SubMenu ORDER BY ap.SortNo ASC LIMIT 1) SortNo,
+        (SELECT ap.Menu FROM auth_permission ap WHERE ap.SubMenu = B.SubMenu ORDER BY ap.SortNo ASC LIMIT 1) Menu
+        FROM
+        (SELECT A.SubMenu,
+        GROUP_CONCAT(A.Operate , '|',A.PermissionId, '|', A.HasPermission ORDER BY A.SortNo) PermissionDetail
+        FROM
+        (SELECT
+        <!-- CONCAT_WS('-', p.Menu, p.SubMenu) SubMenu,-->
+        p.SubMenu,
+        p.PermissionId,
+        p.SortNo,
+        p.Operate,
+        (
+        CASE WHEN EXISTS (
+        SELECT RpId FROM auth_permission_role pr
+        WHERE pr.PermissionId = p.PermissionId AND pr.RoleId = #{roleId,jdbcType=INTEGER })
+        THEN 1 ELSE 0 END
+        ) AS HasPermission
+        FROM auth_permission p) as A
+        GROUP BY A.SubMenu) B ORDER BY SortNo ASC
+
+        <!--
+        SELECT
+            p.PermissionId,
+            p.Menu,
+            p.SubMenu,
+            p.Operate,
+            (
+                CASE  WHEN EXISTS (
+                SELECT RpId FROM auth_permission_role pr
+                WHERE pr.PermissionId = p.PermissionId AND pr.RoleId = #{roleId,jdbcType=INTEGER })
+                THEN 1 ELSE 0 END
+            ) AS HasPermission
+        FROM auth_permission p ORDER BY p.SortNo
+        -->
+
+    </select>
+
+</mapper>

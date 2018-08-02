@@ -1,0 +1,113 @@
+<%var jsPart={%>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/js/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/js/locales/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/initBootstrap_table.js?v=0.2"></script>
+<script type="text/javascript">
+    var $listTabId = $("#searchTable");
+    $(function () {
+        initPageList($listTabId, {
+            url: "/option/page",
+            queryParams: function (params) {
+                return $('#search-form').serializeJson(params);
+            }
+        });
+        //搜索
+        $("#search-submit").click(function () {
+            $listTabId.bootstrapTable('getOptions').pageNumber = 1;
+            $listTabId.bootstrapTable('refresh');
+            return false;
+        });
+    });
+    function optionKey(value, item, index) {
+        var action = new Array();
+        if(${ShiroMethod.hasPermission("配置-编辑")}) {
+            action.push({
+                spanCss: "approve",
+                aCss: "vim-s",
+                value: "编辑",
+                href: "#",
+                onFun: "edit",
+                param: [item.id]
+            });
+        }
+        var option = {
+            href: '',
+            value: value,
+            action: action
+        };
+        return rowAction(option);
+    }
+    function edit(optionId) {
+        $.post('/option/edit/' + optionId, {}, function(str){
+            layer.open({
+                type: 1,
+                title: '编辑配置',
+                content: str,
+                shadeClose: false,
+                shade: 0.8,
+                area: ['30%', '50%'],
+                btn: ['确定', '取消'],
+                yes: function(index, layero){
+                    $('#form2').bootstrapValidator('validate');
+                    if($("#form2").data('bootstrapValidator').isValid()){
+                        $.ajax({
+                            cache: true,
+                            type: "POST",
+                            url:$("#form2").attr("action"),
+                            data:$('#form2').serialize(),
+                            async: false,
+                            success: function(data) {
+                                if(data) {
+                                    initAlertify(data.message, 0 == data.errorCode);
+                                    if (0 == data.errorCode) {
+                                        $listTabId.bootstrapTable('refresh');
+                                        layer.close(index);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+        return false;
+    }
+</script>
+<%};%>
+<%var cssPart={%>
+<link type="text/css" rel="stylesheet" href="/static/plugins/bootstrap_table/css/bootstrap-table.min.css"/>
+<style type="text/css">
+
+</style>
+<%};%>
+<% layout("/common/layout.html",{position:"配置管理", jsPart:jsPart,
+cssPart:cssPart}){ %>
+<!-- search -->
+<div class="row content-row">
+    <form class="form-horizontal" id="search-form" style="float: right">
+        <div class="input-group input-group-sm">
+            <input id="post-search-input" class="form-control" type="text"
+                   name="searchKey" placeholder="值/键/备注">&nbsp; <input
+                id="search-submit" class="btn btn-default btn-sm" type="submit"
+                value="搜索配置">
+        </div>
+    </form>
+</div>
+
+
+<div class="box ">
+    <!-- /.box-header -->
+    <div class="box-body jp-common-pad">
+        <table id="searchTable">
+            <thead>
+            <tr>
+                <th data-formatter="indexNum" data-title="序号" data-align="center" data-width="5%"></th>
+                <th data-field="optionKey" data-formatter="optionKey" data-width="20%" data-title="配置键"></th>
+                <th data-field="optionValue" data-width="20%" data-title="配置值"></th>
+                <th data-field="optionRemark" data-title="配置备注"></th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<% } %>

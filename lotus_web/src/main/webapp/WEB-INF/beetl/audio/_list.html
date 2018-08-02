@@ -1,0 +1,128 @@
+<%var jsPart={%>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/js/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/js/locales/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/initBootstrap_table.js"></script>
+<script type="text/javascript" src="/static/admin/js/attachment_util.js"></script>
+<script type="text/javascript">
+    var $listTabId = $("#audio_searchTable");
+    var allFolder = folder.allFolder();//所有的文件夹
+    var rootFolder = folder.rootFolder();//当前页面附件所在的根目录\
+    var nav = {};//导航生成器
+    $(function () {
+        initPageList($listTabId, {
+            url: "/audio/page",
+            pagination : false,
+            sidePagination : 'client',
+            clickToSelect : true,
+            queryParams : function(params) {
+                return $('#search-form').serializeJson(params);
+            }
+        });
+        //初始化导航生成器
+        nav = new NavUtil({table: $listTabId, position: 2, folderId: rootFolder.id, clickFn: "refreshList"});
+        nav.initNav();
+        //搜索
+        $("#search-submit").click(function () {
+            $listTabId.bootstrapTable('getOptions').pageNumber = 1;
+            $listTabId.bootstrapTable('refresh');
+            nav.searchNav();
+            return false;
+        });
+    });
+    /**
+     * 点击文件夹名称响应的方法
+     * @param folderId
+     * @returns {boolean}
+     */
+    function refreshList(folderId) {
+        //清空搜索条件
+        $('input[name="audioName" ]').val('');
+        //更新当前页面所属文件夹id
+        rootFolder = folder.getById(folderId);
+        //刷新列表数据
+        $listTabId.bootstrapTable('getOptions').queryParams = function (params) {
+            params.folderId = folderId;
+            return $('#search-form').serializeJson(params);
+        }
+        $listTabId.bootstrapTable('getOptions').pageNumber = 1;
+        $listTabId.bootstrapTable('refresh');
+        //生成导航
+        nav.params.folderId = folderId;
+        nav.refresh();
+        return false;
+    }
+
+    function title(value, item, index) {
+        var padHtml = '';
+        if ('folder' == item.folder) {
+            padHtml += attUtil.folderTitle({'value': item.title, 'clickFn': 'refreshList(' + item.id + ')'});
+        } else if ('file' == item.folder) {
+            padHtml += attUtil.fileTitle({'value': item.title, 'href': '/audio/detail/' + item.id, 'target':true });
+        }
+        var option = {
+            strong: false,
+            value: padHtml,
+            action: []
+        };
+        return rowAction(option);
+    }
+
+    function operation(value, item, index) {
+		var html = '';
+		if (0 != item.folderId) {
+			html += ' <a onclick="return refreshList(\'' + item.folderId
+					+ '\');" href="#">打开所在文件夹</a>';
+		}
+		return html;
+	}
+
+    function doConfirm(){
+        var selectList = $listTabId.bootstrapTable("getSelections");
+        var dataList = selectAll(selectList);
+        parent.$formSearchTable.bootstrapTable('append', dataList);
+        parent.layer.closeAll();
+        return false;
+    }
+
+
+</script>
+<%};%>
+<%var cssPart={%>
+<link type="text/css" rel="stylesheet" href="/static/plugins/bootstrap_table/css/bootstrap-table.min.css"/>
+<style type="text/css">
+ #per-div {
+    margin:3%;
+ }
+
+
+</style>
+<%};%>
+<% layout("/common/frame_layout.html",{jsPart:jsPart, cssPart:cssPart}){ %>
+<div class="box-body jp-common-pad" id="per-div">
+    <div class="row content-row">
+        <form class="form-horizontal" id="search-form" style="float: right">
+            <div class="input-group input-group-sm">
+                <input id="post-search-input" class="form-control" type="text"
+                       name="audioName" placeholder="曲目标题">&nbsp; <input
+                    id="search-submit" class="btn btn-default btn-sm" type="submit"
+                    value="搜索曲目">
+            </div>
+        </form>
+    </div>
+    <table id="audio_searchTable">
+        <thead>
+        <tr>
+            <th data-checkbox="true"></th>
+            <th data-formatter="indexNum" data-align="center" data-width="1%">序号</th>
+            <th data-field="title" data-formatter="title">附件</th>
+            <th data-formatter="operation" data-width="16%" data-align="center">操作</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div class="col-xs-12">
+    <button class="btn btn-block btn-primary jp-submiti-button"
+            onclick="doConfirm()">确&nbsp;定
+    </button>
+</div>
+<% } %>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.dao.mapper.UserMapper">
+
+    <resultMap id="selectListResult" type="HashMap">
+        <result column="UserId" property="userId"/>
+        <result column="UserName" property="username"/>
+        <result column="Password" property="password"/>
+        <result column="RealName" property="realname"/>
+        <result column="tel_num" property="telNum"/>
+    </resultMap>
+    <select id="selectList" resultMap="selectListResult">
+        select u.UserId, u.UserName, u.RealName, u.ContactWay tel_num from auth_user u
+        <where>
+            <if test="username != null">
+                <bind name="usernamePatter" value="'%' + username + '%'"/>
+                u.UserName like #{usernamePatter}
+            </if>
+        </where>
+        order by u.UserId desc
+    </select>
+
+    <resultMap id="selectByUsernameResult" type="com.lotus.dao.pojo.User">
+        <result column="UserId" property="userid"/>
+        <result column="UserName" property="username"/>
+        <result column="Password" property="password"/>
+        <result column="RealName" property="realname"/>
+        <result column="ContactWay" property="contactway"/>
+    </resultMap>
+    <select id="selectByUsername" resultMap="selectByUsernameResult">
+        select UserId, UserName,Password,RealName,ContactWay from auth_user Where UserName =
+        #{username, jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insertUserRole">
+        INSERT INTO auth_role_user (RoleId, UserId) VALUES
+        <foreach collection="roleIds" item="roleId" index="index" separator=",">
+            (#{roleId, jdbcType=INTEGER}, #{userId, jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <delete id="deleteUserRole">
+        DELETE FROM auth_role_user WHERE UserId = #{userId, jdbcType=INTEGER}
+    </delete>
+
+</mapper>

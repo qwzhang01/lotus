@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.dao.mapper.AudioAttachmentMapper">
+
+    <resultMap id="selectListResult" type="HashMap">
+        <result property="audioId" column="audio_id"/>
+        <result property="title" column="title"/>
+        <result property="author" column="author"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="audioPath" column="path"/>
+        <result property="summary" column="summary"/>
+        <result property="contentId" column="content_id"/>
+        <result property="contentTitle" column="content_title"/>
+    </resultMap>
+    <select id="selectList" resultMap="selectListResult">
+        SELECT
+        audio.id audio_id,
+        atta.title,
+        atta.author,
+        atta.thumbnail,
+        atta.path,
+        atta.summary,
+        content.title content_title,
+        content.id content_id
+        FROM co_audio_attachment audio
+        LEFT JOIN co_content content ON content.id = audio.content_id
+        LEFT JOIN at_attachment atta ON audio.attachment_id = atta.id
+        <where>
+            content.is_published = 1 AND content.id= #{contentId, jdbcType=INTEGER}
+        </where>
+        ORDER BY atta.title ASC
+    </select>
+
+    <resultMap id="selectByIdResult" type="HashMap">
+        <result property="title" column="title"/>
+        <result property="author" column="author"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="audioPath" column="audio_path"/>
+        <result property="contentId" column="content_id"/>
+    </resultMap>
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="selectByIdResult">
+        SELECT
+        atta.title,
+        atta.author,
+        atta.thumbnail,
+        atta.path audio_path,
+        audio.content_id
+        FROM co_audio_attachment audio
+        LEFT JOIN at_attachment atta on audio.attachment_id = atta.id
+        WHERE audio.id= #{audioId, jdbcType=INTEGER}
+        LIMIT 1
+    </select>
+
+    <select id="selectRandom" resultType="java.lang.Integer">
+        SELECT c.id FROM co_content c LEFT JOIN co_taxonomy t ON c.taxonomy_id = t.id
+        WHERE c.is_published = 1 AND t.app_column = #{appColumn, jdbcType=VARCHAR}
+        ORDER BY RAND() LIMIT 0,1
+    </select>
+
+    <delete id="deleteByContentId">
+        DELETE FROM co_audio_attachment WHERE content_id = #{contentId, jdbcType=INTEGER}
+    </delete>
+</mapper>

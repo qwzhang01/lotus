@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="/static/plugins/bootstrapvalidator/css/bootstrapValidator.min.css">
+<script src="/static/plugins/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+<script src="/static/plugins/bootstrapvalidator/js/initValid.js"></script>
+<script type="text/javascript">
+     $(function(){
+        validateFieldUtil({
+             name: {
+                validators: {
+                    notEmpty: {
+                        message: '文件夹名称不能为空'
+                    },
+                    stringLength: {
+                        min: 1,
+                        max: 20,
+                        message: '文件夹名称长度在1到20之间'
+                    }
+                }
+            }
+         }, $('#form2'));
+    });
+
+
+</script>
+<form action="/folder/save" method="post" id="form2">
+    <div class="col-sm-12" style="margin: 2% auto;">
+        <ul class="list-unstyled">
+            <li class="jp-set-pad">
+                <div class="form-group">
+                    <input type="hidden" name="pFolderId" value="${pFolderId!}"/>
+                    <input class="form-control input-md" type="text" name="name" placeholder="请输入文件夹名称"/>
+                </div>
+            </li>
+        </ul>
+    </div>
+</form>

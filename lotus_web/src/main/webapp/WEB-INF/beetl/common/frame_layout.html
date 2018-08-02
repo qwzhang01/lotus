@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <% include("/common/layout_meta.html"){} %>
+
+    <title></title>
+    <% include("/common/layout_css.html"){} %>
+
+    ${cssPart!}
+
+</head>
+<body class="hold-transition skin-blue">
+<div class="row">
+    <div class="col-md-12">
+        ${layoutContent}
+    </div>
+</div>
+
+<% include("/common/layout_js.html"){} %>
+
+${jsPart!}
+
+</body>
+</html>

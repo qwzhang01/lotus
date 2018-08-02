@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>阅读</title>
+<% include("/share/_share_meta.html"){} %>
+<link rel="stylesheet" href="/static/font-awesome/css/font-awesome.min.css" />
+<link rel="stylesheet" href="/static/app/css/common.css" />
+<link rel="stylesheet" href="/static/app/css/front.css" />
+<style type="text/css">
+.login-box input {
+	border: 1px solid #d2d6de;
+	padding: 0.7rem 0.5rem;
+	width: 80%;
+}
+</style>
+</head>
+<body class="blog-body">
+	<header class="x-layout-100">
+		<div class="jblog-link-logo-image">
+			<h1
+				style="width: 90%; margin-left: 1rem; margin-top: 3rem; font-size: 75%; font-weight: bold;">
+				${article.title!}</h1>
+			<span
+				style="margin-left: 2rem; clear: both; height: 14px; line-height: 14px; font-size: 10px; color: #888;">
+				${article.created!, 'yyyy-MM-dd HH:mm'}&nbsp; &nbsp; &nbsp; &nbsp;
+				&nbsp; ${article.source!}</span>
+		</div>
+	</header>
+	<div class="x-pc-width clearfix x-margin-top-20 x-margin-bottom-20">
+		<!-- -->
+		<div class="x-pull-left x-layout-73 blog-sm-left">
+			<div class="x-white-box">${article.text!}</div>
+		</div>
+		<!-- -->
+	</div>
+	<footer class="footer x-sm-footer">
+		<%if(share){%> <a type="button" id="downBut"
+			  href="${param('download_btn_href')}">${param('download_btn_desc')}</a>
+		<%}%>
+	</footer>
+</body>
+</html>

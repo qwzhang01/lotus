@@ -1,0 +1,69 @@
+<%var jsPart={%>
+<script src="/static/plugins/fine-uploader/jquery.fine-uploader.js"></script>
+<script>
+    var pUrl = null;
+    var pAlt = null;
+    function doChoose(url, alt) {
+        pUrl = url;
+        pAlt = alt;
+    }
+
+    function doConfirm() {
+        parent.fileData.path = pUrl;
+        parent.fileData.alt = pAlt;
+        parent.layer.closeAll();
+    }
+
+    $('#fine-uploader-gallery')
+        .fineUploader(
+            {
+                template: 'qq-template-gallery',
+                request: {
+                    endpoint: '/upload/img/doUpload'
+                },
+                multiple:false,
+                thumbnails: {
+                    placeholders: {
+                        waitingPath: '/static/plugins/fine-uploader/placeholders/waiting-generic.png',
+                        notAvailablePath: '/static/plugins/fine-uploader/placeholders/not_available-generic.png'
+                    }
+                },
+                callbacks: {
+                    onComplete: function (id, name, response) {
+                        doChoose(response.src, '');
+                    }
+                }
+            });
+
+
+
+</script>
+<%};%>
+<%var cssPart={%>
+<link href="/static/plugins/fine-uploader/fine-uploader-new.css" rel="stylesheet">
+<% include("/common/fine_template.html"){} %>
+<style type="text/css">
+    .list-inline > li {
+        display: inline-block;
+        padding: 3px;
+    }
+
+
+
+</style>
+<%};%>
+<% layout("/common/frame_layout.html",{jsPart:jsPart, cssPart:cssPart}){ %>
+<div class="nav-tabs-custom">
+    <div class="tab-content">
+        <div class="tab-pane active">
+            <div class="jp-borwer-tab1">
+                <div id="fine-uploader-gallery"></div>
+                <p class="jp-brower-filesize">最大上传文件大小100MB</p>
+            </div>
+        </div>
+    </div>
+</div>
+<button class="btn btn-block btn-primary jp-submiti-button"
+        onclick="doConfirm()">确&nbsp;定
+</button>
+<% } %>

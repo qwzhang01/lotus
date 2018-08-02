@@ -1,0 +1,281 @@
+<%var jsPart={%>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/js/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/js/locales/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/initBootstrap_table.js"></script>
+<script type="text/javascript" src="/static/admin/js/attachment_util.js"></script>
+<script type="text/javascript">
+    var $listTabId = $("#searchTable");
+    var allFolder = folder.allFolder();//所有的文件夹
+    var rootFolder = folder.rootFolder();//当前页面附件所在的根目录\
+    var nav = {};//导航生成器
+    var fileData = {
+        path : '',
+        alt : ''
+    };
+    $(function () {
+        initPageList($listTabId, {
+            url: "/audio/page",
+            pagination: false,
+            sidePagination: 'client',
+            queryParams: function (params) {
+                return $('#search-form').serializeJson(params);
+            }
+        });
+        //初始化导航生成器
+        nav = new NavUtil({table: $listTabId, position: 1, folderId: rootFolder.id, clickFn: "refreshList"});
+        nav.initNav();
+        //搜索
+        $("#search-submit").click(function () {
+            $listTabId.bootstrapTable('getOptions').pageNumber = 1;
+            $listTabId.bootstrapTable('refresh');
+            nav.searchNav();
+            return false;
+        });
+    });
+
+    /**
+     * 点击文件夹名称响应的方法
+     * @param folderId
+     * @returns {boolean}
+     */
+    function refreshList(folderId) {
+        //更新当前页面所属文件夹id
+        rootFolder = folder.getById(folderId);
+        //刷新列表数据
+        $listTabId.bootstrapTable('getOptions').queryParams = function (params) {
+            params.folderId = folderId;
+            return $('#search-form').serializeJson(params);
+        }
+        $listTabId.bootstrapTable('getOptions').pageNumber = 1;
+        $listTabId.bootstrapTable('refresh');
+        //生成导航
+        nav.params.folderId = folderId;
+        nav.refresh();
+        return false;
+    }
+
+    function title(value, item, index) {
+        var action = [
+            {
+                spanCss: "approve",
+                aCss: "vim-s",
+                value: "编辑" + ("folder" == item.folder ? "文件夹名称" : "曲目信息"),
+                onFun: "edit",
+                param: [item.id, item.folder]
+            }
+        ];
+
+        var padHtml = '';
+        if ('folder' == item.folder) {
+            padHtml += attUtil.folderTitle({'value': item.title, 'clickFn': 'refreshList(' + item.id + ')'});
+        } else if ('file' == item.folder) {
+            padHtml += attUtil.fileTitle({'value': item.title, 'href': '/audio/detail/' + item.id});
+            action.push({
+                spanCss: "approve",
+                aCss: "vim-s",
+                value: "设置缩略图",
+                onFun: "setThumail",
+                param: [item.id]
+            });
+        }
+        if(0 != item.folderId){
+            action.push({
+                spanCss: "approve",
+                aCss: "vim-s",
+                value: "打开所在文件夹",
+                onFun: "refreshList",
+                param: [item.folderId]
+            });
+        }
+        action.push({
+            spanCss: "spam",
+            aCss: "vim-s vim-destructive",
+            value: "删除",
+            onFun: "del",
+            param: [item.id, item.folder]
+        });
+        var option = {
+            strong: false,
+            value: padHtml,
+            action: action
+        };
+        return rowAction(option);
+    }
+    function thumbnail(value, item, index) {
+        return attUtil.imgDom({'value': item.thumbnail, 'rootPath': '${param('qiniu_path')}'})
+    }
+    function add(){
+        $.post('/folder/add/' + rootFolder.id, {}, function(str){
+            layer.open({
+                type: 1,
+                title: '新增文件夹',
+                content: str,
+                shadeClose: false,
+                shade: 0.8,
+                area: ['30%', '25%'],
+                btn: ['确定', '取消'],
+                yes: function(index, layero){
+                    $('#form2').bootstrapValidator('validate');
+                    if($("#form2").data('bootstrapValidator').isValid()){
+                        $.ajax({
+                            cache: true,
+                            type: "POST",
+                            url:$("#form2").attr("action"),
+                            data:$('#form2').serialize(),
+                            async: false,
+                            success: function(data) {
+                                initAlertify(data.message, 0 == data.errorCode);
+                                refreshList(rootFolder.id);
+                                allFolder = folder.allFolder();
+                                layer.close(index);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+        return false;
+    }
+    function edit(id, isFold) {
+        $.post(('folder' == isFold ? '/folder' : '/audio')+ '/edit/' + id, {}, function(str){
+          layer.open({
+            type: 1,
+            title: '编辑' + ("folder" == isFold ? "文件夹名称" : "曲目信息"),
+            content: str,
+            shadeClose: false,
+            shade: 0.8,
+            area: ("folder" == isFold ? ['30%', '25%'] : ['30%', '65%']),
+            btn: ['确定', '取消'],
+            yes: function(index, layero){
+                $('#form2').bootstrapValidator('validate');
+                if($("#form2").data('bootstrapValidator').isValid()){
+                    $.ajax({
+                        cache: true,
+                        type: "POST",
+                        url:$("#form2").attr("action"),
+                        data:$('#form2').serialize(),
+                        async: false,
+                        success: function(data) {
+                            initAlertify(data.message, 0 == data.errorCode);
+                            refreshList(rootFolder.id);
+                            allFolder = folder.allFolder();//更新文件夹json数据
+                            layer.close(index);
+                        }
+                    });
+                }
+            }
+          });
+        });
+    }
+    function del(id, isFold) {
+        alertify.confirm('信息确认', '确定删除该' + ("folder" == isFold ? "文件夹及其内曲目" : "曲目") + '吗？',
+            function () {
+                $.post(('folder' == isFold ? '/folder' : '/audio') + '/delete/' + id, function (result) {
+                    refreshList(rootFolder.id);
+                    initAlertify(result.message, 0 == result.errorCode);
+                });
+            },
+            function () {
+            }).set('labels', {ok: '确定', cancel: '取消'});
+    }
+
+    function setThumail(id) {
+        layer.open({
+            type : 2,
+            title : '设置索略图',
+            shadeClose : true,
+            shade : 0.8,
+            area : [ '92%', '90%' ],
+            content : '/upload/img',
+            end : function() {
+                if ('' != fileData.path && null != fileData.path) {
+                    $.ajax({
+                        cache: true,
+                        type: "POST",
+                        url:'/audio/set/thumail/' + id,
+                        data:{date:new Date, thumailPath:fileData.path},
+                        async: false,
+                        success: function(data) {
+                            initAlertify(data.message, 0 == data.errorCode);
+                            refreshList(rootFolder.id);
+                        }
+                    });
+                }
+            }
+        });
+    }
+    function upload(){
+        //帮助文档
+        //http://www.layui.com/doc/modules/layer.html
+        layer.open({
+            type: 2,
+            title: '上传曲目',
+            content: '/upload/upload?folderId=' + rootFolder.id,
+            shadeClose: false,
+            shade: 0.8,
+            //scrollbar: false,
+            btn: ['确定', '取消'],
+            area: ['92%', '80%'],
+            yes: function(index, layero){
+                var $form = layer.getChildFrame("#form2", index);
+                $.ajax({
+                    cache: true,
+                    type: "POST",
+                    url:'/audio/add',
+                    data:$form.serialize(),
+                    async: false,
+                    success: function(data) {
+                        initAlertify(data.message, 0 == data.errorCode);
+                        refreshList(rootFolder.id);
+                        layer.close(index);
+                    }
+                });
+            }
+        });
+    }
+
+
+
+</script>
+<%};%>
+<%var cssPart={%>
+<link type="text/css" rel="stylesheet" href="/static/plugins/bootstrap_table/css/bootstrap-table.min.css"/>
+<style type="text/css">
+
+</style>
+<%};%>
+<% layout("/common/layout.html",{position:"曲目管理", jsPart:jsPart,
+cssPart:cssPart}){ %>
+<!-- search -->
+<div class="row content-row">
+    <form class="form-horizontal" id="search-form" style="float: right">
+        <div class="input-group input-group-sm">
+            <input id="post-search-input" class="form-control" type="text"
+                   name="audioName" placeholder="曲目标题">&nbsp; <input
+                id="search-submit" class="btn btn-default btn-sm" type="submit"
+                value="搜索曲目">
+        </div>
+    </form>
+    <%if(ShiroMethod.hasPermission("曲目-新增")){%>
+    <a class="btn btn-default btn-sm" href="#" onclick="return add();">新增文件夹</a>
+    <a class="btn btn-default btn-sm" href="#" onclick="return upload();">上传曲目</a>
+    <%}%>
+</div>
+
+
+<div class="box ">
+    <!-- /.box-header -->
+    <div class="box-body jp-common-pad">
+        <table id="searchTable">
+            <thead>
+            <tr>
+                <th data-formatter="indexNum" data-title="序号" data-align="center" data-width="5%"></th>
+                <th data-field="title" data-formatter="title" data-width="80%" data-title="曲目"></th>
+                <th data-field="author" data-width="10%" data-title="作者"></th>
+                <th data-field="thumbnail" data-formatter="thumbnail" data-title="缩略图"></th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<% } %>

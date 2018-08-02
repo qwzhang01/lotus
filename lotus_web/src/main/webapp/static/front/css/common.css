@@ -1,0 +1,407 @@
+body {
+    padding: 0px;
+    margin: 0px auto;
+    font-size: 12px;
+    color: #000000;
+    background-color: #ffffff;
+    font-family: '宋体', Simsun;
+}
+
+/*控制cellspacing*/
+table {
+    border: 0;
+    margin: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/*控制cellpadding*/
+table td {
+    padding: 0;
+}
+
+ul li, ol li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+a:link {
+    color: #000000;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #0066ff;
+    text-decoration: underline;
+}
+
+a:visited {
+    color: #000000;
+    text-decoration: none;
+}
+
+#page {
+    height: auto;
+    width: 970px;
+    background-color: #ffffff;
+    margin: 0 auto;
+}
+
+#top {
+    height: 33px;
+    width: 970px;
+    margin-top: 0px;
+    background-image: url(/static/front/css/images/top.gif);
+}
+
+#flash {
+    height: 158px;
+    width: 970px;
+    text-align: center;
+    margin-top: 0px;
+    background-color: #ffffff;
+}
+
+#menu {
+    height: 53px;
+    width: 970px;
+    text-align: center;
+    margin-top: 0px;
+    background-image: url(/static/front/css/images/menu.gif);
+}
+
+#rlink {
+    margin-top: 8px;
+    height: 31px;
+    width: 970px;
+    background-image: url(/static/front/css/images/rlink.gif);
+    text-align: center;
+}
+
+#r1link {
+    margin-top: 0px;
+    height: 10px;
+    width: 970px;
+    background-image: url(/static/front/css/images/rlink.gif);
+    text-align: center;
+}
+
+#foot {
+    height: 140px;
+    width: 970px;
+    background-color: #e6f0f9;
+    text-align: center;
+}
+
+#search {
+    height: 30px;
+    width: 970px;
+    text-align: center;
+    background-color: #ffffff;
+}
+
+#index {
+    height: auto;
+    width: 970px;
+    background-color: #ffffff;
+}
+
+#flink {
+    margin-top: 8px;
+    height: auto;
+    width: 968px;
+    background-image: #f5f5f5;
+    border: 1px solid #cdcdcd;
+}
+
+#indexleft1 {
+    height: 193px;
+    width: 252px;
+    background-image: url(/static/front/css/images/gongGao.jpg);
+}
+
+#indexleft2 {
+    margin-top: 8px;
+    height: 124px;
+    width: 252px;
+}
+
+#indexleft3 {
+    margin-top: 8px;
+    height: 164px;
+    width: 252px;
+}
+
+#indexleft4 {
+    margin-top: 8px;
+    height: 325px;
+    width: 252px;
+}
+
+#indexleft5 {
+    margin-top: 8px;
+    height: 164px;
+    width: 252px;
+}
+
+#indexright1 {
+    height: 193px;
+    width: 710px;
+}
+
+#indexright3 {
+    margin-top: 8px;
+    height: 201px;
+    width: 710px;
+}
+
+#indexright4 {
+    margin-top: 8px;
+    height: 92px;
+    width: 710px;
+    background-image: url(/static/front/css/images/img2.jpg);
+}
+
+#indexright5 {
+    margin-top: 8px;
+    height: 192px;
+    width: 710px;
+}
+
+#indexright6 {
+    margin-top: 8px;
+    height: 92px;
+    width: 710px;
+    background-image: url(/static/front/css/images/img1.jpg);
+}
+
+#indexright7 {
+    margin-top: 8px;
+    height: 195px;
+    width: 710px;
+    text-align: left;
+}
+
+#br {
+    height: 8px;
+    width: 500px;
+}
+
+#introduce2 {
+    height: auto;
+    width: 700px;
+    float: right;
+}
+
+#introduce3 {
+    height: auto;
+    width: 700px;
+    float: right;
+}
+
+#introduceContent {
+    height: auto;
+}
+
+/*
+ * menu
+ */
+.aac a:link {
+    font-family: 黑体, Helvetica, sans-serif;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 14px;
+    letter-spacing: 0px;
+    background-image: url(/static/front/css/images/menubg111.jpg);
+    line-height: 26px;
+    background-repeat: no-repeat;
+    text-align: center;
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    height: 26px;
+    width: 74px;
+    letter-spacing: 0px;
+}
+
+.aac a:visited {
+    font-family: 黑体, Helvetica, sans-serif;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 14px;
+    letter-spacing: 0px;
+    background-image: url(/static/front/css/images/menubg111.jpg);
+    line-height: 26px;
+    background-repeat: no-repeat;
+    text-align: center;
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    height: 26px;
+    width: 74px;
+    letter-spacing: 0px;
+}
+
+.aac a:hover {
+    text-decoration: none;
+    color: #000000;
+    font-size: 14px;
+    font-family: 黑体, Helvetica, sans-serif;
+    line-height: 26px;
+    background-image: url(/static/front/css/images/menubg222.jpg);
+    background-repeat: no-repeat;
+    text-align: center;
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    height: 26px;
+    width: 74px;
+    letter-spacing: 0px;
+}
+
+.aac1 a:link {
+    font-family: 黑体, Helvetica, sans-serif;
+    text-decoration: none;
+    color: #000000;
+    font-size: 14px;
+    letter-spacing: 0px;
+    line-height: 26px;
+    background-image: url(/static/front/css/images/menubg222.jpg);
+    background-repeat: no-repeat;
+    text-align: center;
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    height: 26px;
+    width: 74px;
+    letter-spacing: 0px;
+}
+
+.aac1 a:visited {
+    font-family: 黑体, Helvetica, sans-serif;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 14px;
+    letter-spacing: 0px;
+    background-image: url(/static/front/css/images/menubg111.jpg);
+    line-height: 26px;
+    background-repeat: no-repeat;
+    text-align: center;
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    height: 26px;
+    width: 74px;
+    letter-spacing: 0px;
+}
+
+.aac1 a:hover {
+    text-decoration: none;
+    color: #000000;
+    font-size: 14px;
+    font-family: 黑体, Helvetica, sans-serif;
+    line-height: 26px;
+    background-image: url(/static/front/css/images/menubg222.jpg);
+    background-repeat: no-repeat;
+    text-align: center;
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    height: 26px;
+    width: 74px;
+    letter-spacing: 0px;
+}
+
+.aac {
+    height: 26px;
+    width: 74px;
+}
+
+.aac1 {
+    heigh: 100px;
+}
+
+/*应该只在首页用到*/
+.m_li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.m_li a:hover {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.m_li a:active {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#menus {
+    height: 33px;
+    width: 970px;
+    margin-top: 0px;
+    text-align: center;;
+}
+
+#menus ul {
+    margin: auto;
+    width: 924px;
+    height: 33px;
+    list-style-type: none;
+    padding: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.m_li {
+    float: left;
+    width: 84px;
+    line-height: 33px;
+    height: 33px;
+    text-align: center;
+}
+
+.m_li_a {
+    float: left;
+    width: 84px;
+    line-height: 33px;
+    text-align: center;
+    padding-top: 3px;
+    font-weight: bold;
+    text-decoration: none;
+    position: relative;
+    height: 33px;
+    margin-top: -3px;
+}
+
+.m_li_a a {
+    display: block;
+    color: #ffffff;
+    width: 84px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.smenu {
+    margin: 0px auto 0px auto;
+    padding: 0px;
+    list-style-type: none;
+    height: 20px;
+}
+
+.s_li {
+    line-height: 20px;
+    width: auto;
+    display: none;
+    height: 20px;
+    text-align: left;
+}

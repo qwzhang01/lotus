@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <% include("/common/layout_meta.html"){} %>
+
+    <title>${appTitle!}</title>
+
+    <% include("/common/layout_css.html"){} %>
+
+    ${cssPart!}
+
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header class="main-header">
+        <a href="/" class="logo"> <span class="logo-mini"><b>JP</b></span>
+            <span class="logo-lg"><b>${appTitle!}</b></span>
+        </a>
+
+        <nav class="navbar navbar-static-top" role="navigation">
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas"
+               role="button"> <span class="sr-only">开关</span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </a>
+
+            <div class="navbar-custom-menu" style="padding-right: 2rem">
+                <ul class="nav navbar-nav">
+
+                    <li class="user user-menu"><a href="#"
+                                                  class="dropdown-toggle" data-toggle="dropdown"> <span
+                            class="hidden-xs"><i class="fa fa-user fa-lg"></i>&nbsp;${session.appUserName!}</span>
+                    </a>
+                    </li>
+                    <li class="user user-menu"><a href="javascript:void(0);"
+                                                  class="dropdown-toggle" data-toggle="dropdown"> <span
+                            onclick="resetpw();"
+                            class="hidden-xs"><i class="fa fa-edit"></i>&nbsp;修改密码</span>
+                    </a>
+                    </li>
+                    <li class="user user-menu"><a href="/logout"> <span
+                            class="hidden-xs"><i class="fa fa-power-off fa-lg"></i>&nbsp;退出</span>
+                    </a>
+                    </li>
+                    <li class="user user-menu"><a href="/help"> <span
+                            class="hidden-xs"><i class="fa fa-file" aria-hidden="true"></i>&nbsp;帮助</span>
+                    </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <% include("/common/layout_nav.html"){} %>
+
+
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>${position}</h1>
+        </section>
+        <section class="content">${layoutContent}</section>
+    </div>
+
+
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>${session.onLines.~size!}   ${date(), 'yyyy-MM-dd HH:mm:ss'} </b>
+        </div>
+        <strong>Copyright &copy; 2017-2018 <a href="#" target="_blank">${appTitle!}</a>.
+        </strong> All rights reserved.
+    </footer>
+
+</div>
+
+<% include("/common/layout_js.html"){} %>
+
+${jsPart!}
+
+</body>
+</html>

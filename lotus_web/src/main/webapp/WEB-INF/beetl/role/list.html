@@ -1,0 +1,134 @@
+<%var jsPart={%>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/js/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/js/locales/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/initBootstrap_table.js?v=0.2"></script>
+<script type="text/javascript">
+    var $listTabId = $("#searchTable");
+    $(function () {
+        initPageList($listTabId, {
+            url: "/role/page",
+            queryParams: function (params) {
+                return $('#search-form').serializeJson(params);
+            }
+        });
+        //搜索
+        $("#search-submit").click(function () {
+            $listTabId.bootstrapTable('getOptions').pageNumber = 1;
+            $listTabId.bootstrapTable('refresh');
+            return false;
+        });
+    });
+
+    function roleName(value, item, index) {
+        var action = new Array();
+        if(${ShiroMethod.hasPermission("角色管理-编辑")}){
+            action.push({
+                spanCss: "approve",
+                aCss: "vim-s",
+                value: "编辑",
+                href: "/role/form?roleId=" + item.roleId,
+                onFun: "",
+                param: []
+            });
+        }
+        if(${ShiroMethod.hasPermission("角色管理-分配权限")}){
+            action.push({
+                spanCss: "approve",
+                aCss: "vim-s",
+                value: "分配权限",
+                href: "javascript:;",
+                onFun: "assginPer",
+                param: [item.roleId]
+            });
+        }
+        if(${ShiroMethod.hasPermission("角色管理-删除")}){
+            action.push({
+                spanCss: "spam",
+                aCss: "vim-s vim-destructive",
+                value: "删除",
+                href: "javascript:;",
+                onFun: "del",
+                param: [item.roleId]
+            });
+        }
+        var option = {
+            href: ${ShiroMethod.hasPermission("角色管理-编辑")}? ('/role/form?roleId=' + item.roleId) : '',
+            value: value,
+            action: action
+        };
+        return rowAction(option);
+    }
+
+    function del(id) {
+        alertify.confirm('信息确认', '确定删除该角色吗？',
+            function () {
+                window.location.href = '/role/delete?roleId=' + id;
+            },
+            function () {
+            }).set('labels', {ok: '确定', cancel: '取消'});
+    }
+
+    function assginPer(id) {
+        //帮助文档
+        //http://www.layui.com/doc/modules/layer.html
+        //$.post('/role/assginPer?roleId=' + id, {}, function(str){
+        //    layer.open({
+        //        type: 1,
+        //        content: str //注意，如果str是object，那么需要字符拼接。
+        //    });
+        //});
+
+        layer.open({
+            type: 2,
+            title: '分配权限',
+            content: '/role/assginPer?roleId=' + id,
+            shadeClose: false,
+            shade: 0.8,
+            area: ['82%', '80%']
+        });
+    }
+
+
+
+</script>
+<%};%>
+<%var cssPart={%>
+<link type="text/css" rel="stylesheet" href="/static/plugins/bootstrap_table/css/bootstrap-table.min.css"/>
+<style type="text/css">
+
+</style>
+<%};%>
+<% layout("/common/layout.html",{position:"角色管理", jsPart:jsPart,
+cssPart:cssPart}){ %>
+<!-- search -->
+<div class="row content-row">
+    <form class="form-horizontal" id="search-form" style="float: right">
+        <div class="input-group input-group-sm">
+            <input id="post-search-input" class="form-control" type="text"
+                   name="roleName" placeholder="角色名称">&nbsp; <input
+                id="search-submit" class="btn btn-default btn-sm" type="submit"
+                value="搜索角色">
+        </div>
+    </form>
+    <%if(ShiroMethod.hasPermission("角色管理-新增")){%>
+    <a class="btn btn-default btn-sm" href="/role/form">新增角色</a>
+    <%}%>
+</div>
+
+
+<div class="box ">
+    <!-- /.box-header -->
+    <div class="box-body jp-common-pad">
+        <table id="searchTable">
+            <thead>
+            <tr>
+                <th data-formatter="indexNum" data-title="序号" data-align="center" data-width="3%"></th>
+                <th data-field="roleName" data-formatter="roleName" data-width="35%" data-title="角色名称"></th>
+                <th data-field="description" data-title="角色简介"></th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<% } %>
+

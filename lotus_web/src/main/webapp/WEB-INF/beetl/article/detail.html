@@ -1,0 +1,25 @@
+<%var jsPart={%>
+<script type="text/javascript">
+</script>
+<%};%>
+<%var cssPart={%>
+<style type="text/css">
+
+</style>
+<%};%>
+<% layout("/common/layout.html",{position:"文章管理", jsPart:jsPart, cssPart:cssPart}){ %>
+<section class="content">
+    <div class="col-xs-12 ">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-1">
+                <iframe src="${h5_href!}"
+                    style="width:375px; height:600px;border:1px solid #cecece"></iframe>
+            </div>
+            <div class="col-md-4" style="padding-top:20%;">
+                <img src="/qrcode/gen?url=${h5_href_param!}" class="img-responsive" />
+            </div>
+        </div>
+    </div>
+</section>
+<% } %>
+

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.dao.mapper.FolderMapper">
+
+    <resultMap id="selectRootFolderResult" type="com.lotus.dao.pojo.Folder">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="full_path" property="fullPath"/>
+    </resultMap>
+    <select id="selectRootFolder" resultMap="selectRootFolderResult">
+        SELECT `id`,`name`,`full_path` FROM at_folder WHERE `full_path` = '/' LIMIT 1
+    </select>
+
+    <resultMap id="selectAllResult" type="com.lotus.dao.pojo.Folder">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="full_path" property="fullPath"/>
+    </resultMap>
+    <select id="selectAll" resultMap="selectAllResult">
+        SELECT `id`,`name`,`full_path` FROM at_folder
+    </select>
+
+    <select id="selectSameName" resultType="java.lang.String">
+        <bind name="namePattern" value="name + '%'"/>
+        SELECT name FROM at_folder WHERE full_path = #{fullPath} AND name LIKE #{namePattern}
+        <if test="folderId != null and folderId != 0">
+            AND id != #{folderId}
+        </if>
+        ORDER BY name DESC LIMIT 1
+    </select>
+
+    <delete id="deleteChildenFile">
+        <bind name="pathPattern" value="path + '%'"/>
+        DELETE FROM at_attachment
+        WHERE EXISTS
+        (SELECT * FROM at_folder WHERE at_attachment.folder_id = at_folder.id AND at_folder.full_path LIKE
+        #{pathPattern, jdbcType=VARCHAR} )
+    </delete>
+
+    <delete id="deleteFile">
+        DELETE FROM at_attachment WHERE folder_id = #{folderId, jdbcType=INTEGER}
+    </delete>
+
+    <delete id="deleteChildrenFolder">
+        <bind name="pathPattern" value="path + '%'"/>
+        DELETE FROM at_folder WHERE full_path LIKE #{pathPattern, jdbcType=VARCHAR}
+    </delete>
+</mapper>

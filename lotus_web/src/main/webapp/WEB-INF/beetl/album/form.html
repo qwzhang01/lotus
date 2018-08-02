@@ -1,0 +1,311 @@
+<%var jsPart={%>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/js/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/js/locales/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/initBootstrap_table.js"></script>
+<script src="/static/plugins/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+<script src="/static/plugins/bootstrapvalidator/js/initValid.js"></script>
+<script type="text/javascript">
+    var fileData = {
+        path : '',
+        alt : ''
+    };
+    var $formSearchTable = $("#formSearchTable");
+    $(function () {
+        //前端表单校验
+         validateFieldUtil({
+            title: {
+                message: 'The username is not valid',
+                validators: {
+                    notEmpty: {
+                        message: '专辑标题不能为空'
+                    },
+                    stringLength: {
+                        min: 1,
+                        max: 50,
+                        message: '专辑标题的长度在1到50个字符'
+                    }
+                }
+            }, source: {
+                message: 'The username is not valid',
+                validators: {
+                    notEmpty: {
+                        message: '专辑来源不能为空'
+                    },
+                    stringLength: {
+                        min: 1,
+                        max: 50,
+                        message: '专辑来源的长度在1到50个字符'
+                    }
+                }
+            }, taxonomyId: {
+                message: 'The username is not valid',
+                validators: {
+                    notEmpty: {
+                        message: '所在栏目不能为空'
+                    }
+                }
+            }
+        }, $('#form'));
+        //初始化专辑曲目列表
+        initPageList($formSearchTable, {
+			url : "/audio/page/album",
+			pagination : false,
+			sidePagination : 'client',
+			clickToSelect : true,
+			striped : false,
+			showHeader : false,
+			uniqueId : 'id',
+			queryParams : function(params) {
+				params.albumId = '${content.id!}';
+				return params;
+			}
+		});
+    });
+    function doSelectThumbnail(imgId, inputId) {
+		layer.open({
+			type : 2,
+			title : '上传图片',
+			shadeClose : true,
+			shade : 0.8,
+			area : [ '92%', '90%' ],
+			content : '/upload/img',
+			end : function() {
+				if ('' != fileData.path && null != fileData.path) {
+					$("#" + imgId).attr("src", "${param('qiniu_path')}/" + fileData.path);
+					$("#" + inputId).attr("value", fileData.path);
+				}
+			}
+		});
+	}
+
+	function doRemoveThumbnail(imgId, inputId) {
+		$("#" + imgId).attr("src", "/static/admin/image/nothumbnail.jpg");
+		$("#" + inputId).val("");
+	}
+
+	function removeAudio(value, item, index){
+	    return '<a href="#" class="list-btn" onclick="return removeRow(' + item.id + ')">删除</a>';
+	}
+	function removeRow(id) {
+		$formSearchTable.bootstrapTable('removeByUniqueId', id);
+		return false;
+	}
+	function addAudio(){
+	    //layer.getChildFrame(selector, index) - 获取iframe页的DOM
+	    layer.open({
+            type: 2,
+            title: '添加曲目',
+            content: '/audio/list?innerFlag=add',
+            shadeClose: false,
+            shade: 0.8,
+            area: ['92%', '90%']
+        });
+	    return false;
+	}
+
+	function doSubmit(){
+	    $('#form').bootstrapValidator('validate');
+	    if($("#form").data('bootstrapValidator').isValid()){
+            var audioId = new Array();
+            var audioData = $formSearchTable.bootstrapTable('getData');//获取表格的所有内容行
+            for (i = 0; i < audioData.length; i++) {
+                audioId.push(audioData[i].id);
+            }
+            var submitData = $("#form").serializeJson({'date':new Date, 'audioId':audioId});
+            $.post($('#form').attr('action'), submitData, function(data){
+                initAlertify(data.message, 0 == data.errorCode);
+                if(0 == data.errorCode){
+                    window.location.href = '/album/list';
+                }
+            }, 'json');
+        }
+	    return false;
+	}
+
+
+</script>
+<%};%>
+<%var cssPart={%>
+<link type="text/css" rel="stylesheet" href="/static/plugins/bootstrap_table/css/bootstrap-table.min.css"/>
+<link rel="stylesheet" href="/static/plugins/bootstrapvalidator/css/bootstrapValidator.min.css">
+<style type="text/css">
+
+</style>
+<%};%>
+<% layout("/common/layout.html",{position:"专辑管理", jsPart:jsPart, cssPart:cssPart}){ %>
+<form action="/album/save" id="form" method="post" class="form-horizontal">
+    <input type="hidden" name="id" value="${content.id!}"/>
+    <div class="row">
+        <!-- /.col -->
+        <div class="col-md-9">
+            <!-- /.box -->
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">专辑信息</h3>
+                </div>
+                <div class="box-body jp-content-select-box">
+                    <div class="form-group">
+                        <label for="title" class="col-sm-2 control-label">专辑标题</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="title" name="title" value="${content.title!}"
+                                   placeholder="在此输入标题">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="source" class="col-sm-2 control-label">专辑来源</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="source" name="source" value="${content.source!}"
+                                   placeholder="在此输入来源">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="taxonomyId" class="col-sm-2 control-label">所属栏目</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="taxonomyId" name="taxonomyId">
+                                <option value="">请选择专辑所属栏目</option>
+                                <%for(var item in column){%>
+                                <option value="${item.id}" ${item.id== content.taxonomyId! ?
+                                'selected="selected"':''}>${item.title}</option>
+                                <%}%>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="summary" class="col-sm-2 control-label">专辑简介</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" rows="3" id="summary" name="summary" placeholder="在此输入专辑简介">${content.summary!}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">专辑曲目</h3>
+                </div>
+                <div class="box-body jp-content-select-box">
+                    <div class="col-md-4">
+                        <button class="btn" onclick="return addAudio();">添加音频</button>
+                    </div>
+                </div>
+                <div class="box-body jp-content-select-box">
+                    <table id="formSearchTable">
+                        <thead>
+                        <tr>
+                            <th data-field="title">音频名称</th>
+                            <th data-formatter="removeAudio" data-width="16%"></th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-md-3">
+            <div class="box box-solid">
+                <!-- /.box -->
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">置顶</h3>
+                        <div class="box-tools">
+                            <button type="button" class="btn btn-box-tool"
+                                    data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body jp-content-select-box">
+                        <div class="col-md-10">
+                            <label> <input name="isStick" type="radio" ${1==content.isStick!0?"checked='checked'"}
+                                           value="1"/>
+                                置顶
+                            </label>
+                            <label> <input name="isStick" type="radio" ${1!=content.isStick!0?"checked='checked'"}
+                                           value="0"/>
+                                不置顶
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box -->
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">专辑封面</h3>
+                        <div class="box-tools">
+                            <button type="button" class="btn btn-box-tool"
+                                    data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body no-padding">
+                        <ul class="nav ">
+                            <li class="">
+                                <div class="jp-content-thumbnail-box">
+                                    <img src="${isNotEmpty(content.thumbnail)? param('qiniu_path') + '/' + content.thumbnail : '/static/admin/image/nothumbnail.jpg'}"
+                                         id="thumbnail"
+                                         class="jp-content-thumbnail"/>
+                                    <input type="hidden" name="thumbnail" value="${content.thumbnail! }"
+                                           id="content_thumbnail">
+                                </div>
+                                <div class="clr"></div>
+                            </li>
+                            <li class="jp-release-set jp-borde-top">
+                                <button type="button" class="btn btn-default btn-sm"
+                                        onclick="doSelectThumbnail('thumbnail', 'content_thumbnail')">上传封面
+                                </button>
+                                <a
+                                        href="javascript:;" style="display: inline;"
+                                        onclick="doRemoveThumbnail('thumbnail', 'content_thumbnail')">移除封面</a>
+                                <div class="clr"></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">缩略图</h3>
+                        <div class="box-tools">
+                            <button type="button" class="btn btn-box-tool"
+                                    data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body no-padding">
+                        <ul class="nav ">
+                            <li class="">
+                                <div class="jp-content-thumbnail-box">
+                                    <img src="${isNotEmpty(content.icon)? param('qiniu_path') + '/' + content.icon : '/static/admin/image/nothumbnail.jpg'}"
+                                         id="icon"
+                                         class="jp-content-thumbnail"/>
+                                    <input type="hidden" name="icon" value="${content.icon! }" id="content_icon">
+                                </div>
+                                <div class="clr"></div>
+                            </li>
+                            <li class="jp-release-set jp-borde-top">
+                                <button type="button" class="btn btn-default btn-sm"
+                                        onclick="doSelectThumbnail('icon', 'content_icon')">上传图片
+                                </button>
+                                <a
+                                        href="javascript:;" style="display: inline;"
+                                        onclick="doRemoveThumbnail('icon', 'content_icon')">移除缩略图</a>
+                                <div class="clr"></div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /. box -->
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <input type="submit" class="btn btn-primary" value="保存更改" onclick="return doSubmit();"/>
+        </div>
+    </div>
+</form>
+<% } %>
+

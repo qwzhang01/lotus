@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.dao.mapper.ContentMapper">
+
+    <resultMap id="selectListResult" type="HashMap">
+        <result property="contentId" column="content_id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="type" column="type"/>
+        <result property="created" column="created"/>
+    </resultMap>
+
+    <select id="selectList" resultMap="selectListResult">
+        SELECT
+        content.id content_id,
+        content.title,
+        content.summary,
+        content.thumbnail,
+        content.icon,
+        taxonomy.type,
+        DATE_FORMAT(content.created,'%Y-%m-%d %H:%i:%s') created
+        FROM co_content content
+        LEFT JOIN co_taxonomy taxonomy ON content.taxonomy_id = taxonomy.id
+        WHERE content.is_published = 1 AND taxonomy.app_column= #{appColumn, jdbcType=VARCHAR}
+
+        <if test="sticky != null">
+            AND content.is_stick = #{sticky, jdbcType=INTEGER}
+        </if>
+
+        ORDER BY content.is_stick DESC, content.sort_num DESC, content.created DESC
+    </select>
+
+    <resultMap id="selectListAdminResult" type="HashMap">
+        <result property="contentId" column="content_id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="type" column="type"/>
+        <result property="isPublished" column="is_published"/>
+        <result property="isStick" column="is_stick"/>
+        <result property="taxonomyTitle" column="taxonomy_title"/>
+        <result property="created" column="created"/>
+    </resultMap>
+
+    <select id="selectListAdmin" resultMap="selectListAdminResult">
+        SELECT
+        content.id content_id,
+        content.title,
+        content.summary,
+        content.thumbnail,
+        content.icon,
+        content.source,
+        content.is_stick,
+        content.is_published,
+        DATE_FORMAT(content.created,'%Y-%m-%d %H:%i:%s') created,
+        taxonomy.type,
+        taxonomy.title as taxonomy_title
+        FROM co_content content
+        LEFT JOIN co_taxonomy taxonomy ON content.taxonomy_id = taxonomy.id
+        WHERE taxonomy.type= #{contentType, jdbcType=VARCHAR}
+
+        <if test="taxonomyId != null and taxonomyId != 0">
+            AND content.taxonomy_id = #{taxonomyId, jdbcType=INTEGER}
+        </if>
+        <if test="title != null and title != ''">
+            <bind name="titlePattern" value="'%' + title + '%'"/>
+            AND content.title LIKE #{titlePattern, jdbcType=VARCHAR}
+        </if>
+        <if test="begin != null">
+            AND content.created <![CDATA[<=]]> #{begin, jdbcType=DATETIME}
+        </if>
+        <if test="end != null">
+            AND content.created &gt;= #{end, jdbcType=DATETIME}
+        </if>
+
+        ORDER BY content.is_stick DESC, content.sort_num DESC, content.created DESC
+    </select>
+
+    <resultMap id="selectNeighborResult" type="com.lotus.dao.pojo.Content">
+        <result property="id" column="id"/>
+        <result property="taxonomyId" column="taxonomy_id"/>
+        <result property="title" column="title"/>
+        <result property="text" column="text"/>
+        <result property="summary" column="summary"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="isStick" column="is_stick"/>
+        <result property="isPublished" column="is_published"/>
+        <result property="sortNum" column="sort_num"/>
+        <result property="source" column="source"/>
+        <result property="sourceHref" column="source_href"/>
+        <result property="created" column="created"/>
+        <result property="modified" column="modified"/>
+        <result property="icon" column="icon"/>
+    </resultMap>
+    <select id="selectNeighbor" resultMap="selectNeighborResult">
+        SELECT * FROM co_content WHERE taxonomy_id = #{taxonomyId, jdbcType=INTEGER}
+        <if test="upOrDown == 'up'">
+            AND sort_num &gt; #{sortNum, jdbcType=INTEGER} ORDER BY sort_num ASC
+        </if>
+        <if test="upOrDown == 'down'">
+            AND sort_num &lt; #{sortNum, jdbcType=INTEGER} ORDER BY sort_num DESC
+        </if>
+        LIMIT 1
+    </select>
+
+    <select id="selectMaxSortNum" resultType="java.lang.Integer">
+        SELECT sort_num FROM co_content
+        <where>
+            <if test="taxonomyId != null and taxonomyId != 0">
+                taxonomy_id = #{taxonomyId, jdbcType=INTEGER}
+            </if>
+        </where>
+        ORDER BY sort_num DESC
+        LIMIT 1
+    </select>
+
+    <!--
+        原符号       <        <=      >       >=       &        '        "
+        替换符号    &lt;    &lt;=   &gt;    &gt;=   &amp;   &apos;  &quot;
+    -->
+</mapper>

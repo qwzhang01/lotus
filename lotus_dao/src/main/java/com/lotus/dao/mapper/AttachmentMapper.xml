@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.dao.mapper.AttachmentMapper">
+
+    <resultMap id="selectListResult" type="HashMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="path" column="path"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="author" column="author"/>
+        <result property="folderId" column="folder_id"/>
+        <result property="folder" column="folder"/>
+    </resultMap>
+
+    <select id="selectList" resultMap="selectListResult">
+        <choose>
+            <when test="title != null and title != ''">
+                <bind name="titlePattern" value="'%' + title + '%'"/>
+                SELECT a.id, a.title, a.path, a.thumbnail, a.author, 'file' folder, a.folder_id
+                FROM at_attachment a
+                WHERE a.title LIKE #{titlePattern}
+            </when>
+            <otherwise>
+                SELECT f.id, f.name title, f.full_path path, '' thumbnail,
+                '' author, '0' folder_id, 'folder' folder
+                FROM at_folder f WHERE f.full_path = #{fullPath, jdbcType=VARCHAR}
+
+                UNION ALL
+
+                SELECT a.id, a.title, a.path, a.thumbnail,
+                a.author, '0' folder_id, 'file' folder
+                FROM at_attachment a WHERE a.folder_id = #{folderId, jdbcType=INTEGER}
+
+                ORDER BY folder DESC, title ASC
+
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="selectSameTitle" resultType="java.lang.String">
+        <bind name="titlePattern" value="title + '%'"/>
+        SELECT title FROM at_attachment WHERE folder_id = #{folderId, jdbcType=INTEGER} AND title LIKE
+        #{titlePattern, jdbcType=VARCHAR}
+        <if test="fileId != null and fileId != 0">
+            AND id != #{fileId, jdbcType=INTEGER}
+        </if>
+        ORDER BY title DESC LIMIT 1
+    </select>
+
+    <resultMap id="selectListByAlbumIdResult" type="HashMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="path" column="path"/>
+        <result property="folder" column="folder"/>
+    </resultMap>
+    <select id="selectListByAlbumId" resultMap="selectListByAlbumIdResult">
+        SELECT
+        att.id,
+        att.title,
+        att.thumbnail,
+        att.path,
+        'file' folder
+        FROM co_audio_attachment aa
+        LEFT JOIN at_attachment att ON aa.attachment_id = att.id
+        WHERE aa.content_id = #{albumId, jdbcType=INTEGER}
+        ORDER BY att.title ASC
+    </select>
+
+</mapper>

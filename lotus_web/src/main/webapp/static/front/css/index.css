@@ -1,0 +1,327 @@
+.moreBtn {
+    padding-right: 20px;
+}
+
+.moreBtn a {
+    float: right;
+}
+
+td ul li a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+ul#leftlist {
+    margin: 0px auto;
+    width: 220px;
+    float: left;
+    padding: 8px 0 8px 8px;
+}
+
+ul#leftlist li {
+    width: 220px;
+    height: 22px;
+    float: left;
+    padding: 3px 0 3px 5px;
+    text-align: left;
+    width: 220px;
+}
+
+ul#leftlist li a {
+    width: 95%;
+}
+
+ul.titlelist1 {
+    margin: 0px auto;
+    width: 380px;
+    float: left;
+    padding: 8px 0 8px 8px;
+}
+
+ul.titlelist1 li {
+    margin: 2px auto;
+    width: 370px;
+    height: 22px;
+    float: left;
+    padding: 3px 0 3px 5px;
+    text-align: left;
+}
+
+ul.titlelist1 li a {
+    width: 85%;
+}
+
+ul.titlelist1 li span {
+    color: #7C7C7C;
+    font-size: 12px;
+    float: right;
+    margin: -13px 0 0 0;
+}
+
+ul.titlelist2 {
+    margin: 0px auto;
+    width: 271px;
+    float: left;
+    padding: 8px 0 8px 8px;
+}
+
+ul.titlelist2 li {
+    width: 271px;
+    height: 22px;
+    float: left;
+    padding: 3px 0 3px 5px;
+    text-align: left;
+}
+
+ul.titlelist2 li a {
+    width: 90%;
+}
+
+ul.titlelist3 {
+    margin: 0px auto;
+    width: 320px;
+    float: left;
+    padding: 8px 0 8px 8px;
+}
+
+ul.titlelist3 li {
+    width: 320px;
+    height: 22px;
+    float: left;
+    padding: 3px 0 3px 5px;
+    text-align: left;
+}
+
+ul.titlelist3 li a {
+    width: 85%;
+}
+
+ul.titlelist3 li span {
+    color: #7C7C7C;
+    font-size: 12px;
+    float: right;
+    margin: -13px 0 0 0;
+}
+
+.title1 {
+    padding-left: 18px;
+    width: 428px;
+    height: 27px;
+    background-image: url(/static/front/css/images/gongZuo.jpg);
+}
+
+.title2 {
+    padding-left: 18px;
+    width: 271px;
+    height: 27px;
+    background-image: url(/static/front/css/images/gongZuo.jpg);
+}
+
+.title3 {
+    width: 348px;
+    height: 25px;
+    padding-right: 25px;
+    padding-left: 18px;
+    background-image: url(/static/front/css/images/gongZuo.jpg);
+}
+
+.title1 font {
+    font-weight: bold;
+    color: #0255a1;
+    cursor: pointer;
+}
+
+.title3 font {
+    font-weight: bold;
+    color: #0255a1;
+    cursor: pointer;
+}
+
+#NewsPic {
+    margin: 3px auto;
+    padding: 0 auto;
+    position: relative;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-left-width: 0px;
+    border-bottom-width: 0px;
+    top: 0px;
+    left: 0px;
+    width: 270px;
+    height: 170px;
+}
+
+#NewsPicTxt {
+    border-top-width: 1px;
+    font-weight: bold;
+    border-left-width: 1px;
+    font-size: 12px;
+    border-bottom-width: 1px;
+    margin: 3px auto 0px;
+    width: 270px;
+    height: 20px;
+    color: black;
+    padding-top: 4px;
+    font-family: sans-serif;
+    position: relative;
+    height: 22px;
+    text-align: center;
+    border-right-width: 1px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#NewsPic A {
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-bottom-width: 0px;
+    overflow: visible;
+    width: 100%;
+    height: 100%;
+    border-right-width: 0px;
+    text-decoration: none
+}
+
+#NewsPic a:hover {
+    text-decoration: none
+}
+
+#NewPic a:visited {
+    text-decoration: none
+}
+
+#NewsPic .Picture {
+    border-right: #ffffff 1px solid;
+    border-top: #ffffff 1px solid;
+    left: -1px;
+    border-left: #ffffff 1px solid;
+    width: 100%;
+    border-bottom: #ffffff 1px solid;
+    position: absolute;
+    top: 0px;
+    height: 100%
+}
+
+#NewsPic .Nav {
+    right: 0px;
+    width: 100%;
+    bottom: 0px;
+    position: absolute;
+    height: 12px
+}
+
+#NewsPic .Nav span {
+    display: block;
+    background: #000000;
+    float: right;
+    font: 10px courier;
+    border-left: #ffffff 1px solid;
+    width: 24px;
+    cursor: hand;
+    color: #ffffff;
+    height: 100%;
+    text-align: center
+}
+
+#NewsPic .Nav span.Cur {
+    background: #ce0609;
+    color: white
+}
+
+#NewsPic .Nav span.Normal {
+    background: #000000;
+    filter: alpha(opacity=50);
+    color: white;
+    opacity: .5
+}
+
+#NewsPic .Nav span A {
+    display: block;
+    width: 100%;
+    color: white;
+    position: relative;
+    height: 100%
+}
+
+#NewsPic .Nav span A:hover {
+    cursor: hand
+}
+
+.carpicture {
+    border-right: #e4e4e4 1px solid;
+    padding-right: 0px;
+    border-top: #e4e4e4 1px solid;
+    display: block;
+    padding-left: 8px;
+    float: left;
+    padding-bottom: 6px;
+    margin: 8px 0px 8px 6px;
+    border-left: #e4e4e4 1px solid;
+    width: 257px;
+    padding-top: 6px;
+    border-bottom: #e4e4e4 1px solid;
+    position: relative;
+    height: 212px
+}
+
+table#businessTable {
+    width: 710px;
+    height: 26px;
+    border-right-style: solid;
+    border-left-style: solid;
+    border-right-width: 1px;
+    border-left-width: 1px;
+    border-right-color: #accee9;
+    border-left-color: #accee9;
+" background-image: url(/static/front/css/images/menubg11.jpg);
+}
+
+table#businessTable tr td {
+    height: 26px;
+}
+
+div#BigDIV {
+    width: 708px;
+    height: 167px;
+    background-color: #edf6fd;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-color: #accee9;
+    border-bottom-color: #accee9;
+    border-left-color: #accee9;
+}
+
+div#BigDIV ul {
+    margin: 0 auto;
+    padding: 8px 0 8px 8px;
+    width: 628px;
+    float: left;
+    font-size: 12px;
+    color: #000000;
+}
+
+div#BigDIV ul li {
+    width: 628px;
+    height: 22px;
+    float: left;
+    padding: 5px 0 3px 3px;
+    text-align: left;
+}
+
+div#BigDIV ul li a {
+    width: 85%;
+}
+
+div#BigDIV ul li span {
+    color: Black;
+    font-size: 12px;
+    float: right;
+    margin: -13px 0 0 0;
+}

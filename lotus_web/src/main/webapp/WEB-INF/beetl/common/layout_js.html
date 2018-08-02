@@ -1,0 +1,67 @@
+<script src="/static/plugins/jquery/jquery-2.1.4.min.js"></script>
+<script src="/static/plugins/jquery/jquery.form.min.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/plugins/fastclick/fastclick.min.js"></script>
+<script src="/static/lte/js/app.js"></script>
+<script src="/static/admin/js/common.js"></script>
+<script src="/static/layer/layer.js"></script>
+<script src="/static/plugins/pace/pace.min.js"></script>
+<script src="/static/plugins/toastr/toastr.js"></script>
+<script src="/static/plugins/alertifyjs/alertify.min.js"></script>
+<script src="/static/plugins/alertifyjs/initalertify.js"></script>
+<script type="application/javascript">
+    $(function () {
+        fix();
+        initUrls();
+        initToast();
+
+        <%if(isNotEmpty(redirectMsg)){%>
+            var notification = initAlertify('${redirectMsg.message!"操作成功"}', ${0 == redirectMsg.errorCode!0});
+        <%}%>
+
+        $(document).ajaxStart(function() {
+            //不知道是神马鬼 先加上 看效果
+            Pace.restart();
+        });
+    });
+
+    /**
+     * 关闭弹出层的frame的时候调用
+     * @param data
+     */
+    function closeLayerFn(data) {
+        var notification = initAlertify(data.message, 0 == data.errorCode);
+    }
+
+    /**
+     * 修改密码
+     */
+    function resetpw(){
+        $.post('/user/resetpw/form', {}, function(str){
+            layer.open({
+                type: 1,
+                title: '修改密码',
+                content: str,
+                shadeClose: false,
+                shade: 0.8,
+                area: ['30%', '30%'],
+                btn: ['确定', '取消'],
+                yes: function(index, layero){
+                    $('#resetpwForm').bootstrapValidator('validate');
+                    if($("#resetpwForm").data('bootstrapValidator').isValid()){
+                        $.post($('#resetpwForm').attr('action') + '?' + $('#resetpwForm').serialize(), {}, function(data){
+                            layer.close(index);
+                            initAlertify(data.message, 0 == data.errorCode);
+                            if(0 == data.errorCode){
+                                window.location.reload();
+                            }
+                        }, 'json');
+                    }
+                }
+            });
+        })
+        return false;
+    }
+
+
+</script>

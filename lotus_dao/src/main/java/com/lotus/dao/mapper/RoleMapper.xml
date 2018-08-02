@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lotus.dao.mapper.RoleMapper">
+
+    <resultMap id="selectListResult" type="HashMap">
+        <result column="RoleId" property="roleId"/>
+        <result column="RoleName" property="roleName"/>
+        <result column="Description" property="description"/>
+    </resultMap>
+    <select id="selectList" resultMap="selectListResult">
+        select r.RoleId, r.RoleName, r.Description from auth_role r
+        <where>
+            <if test="roleName != null">
+                <bind name="roleNamePattern" value="'%' + roleName + '%'"/>
+                r.RoleName like #{roleNamePattern}
+            </if>
+        </where>
+        order by r.RoleId DESC
+    </select>
+
+    <resultMap id="selectRoleUserResult" type="HashMap">
+        <result column="RoleId" property="roleId"/>
+        <result column="RoleName" property="roleName"/>
+        <result column="HasRole" property="hasRole"/>
+    </resultMap>
+
+    <select id="selectRoleUser" resultMap="selectRoleUserResult">
+        <choose>
+            <when test="userId == null">
+                SELECT role.RoleId, role.RoleName, '0' as HasRole
+                FROM auth_role role ORDER BY role.RoleName ASC
+            </when>
+            <otherwise>
+                SELECT role.RoleId, role.RoleName,
+                <!--判断是否是对应用户的角色-->
+                (CASE
+                (SELECT COUNT(*) FROM auth_role_user WHERE RoleId = role.RoleId AND UserId =
+                #{userId, jdbcType=INTEGER})
+                WHEN 0 THEN false ELSE TRUE END)
+                AS HasRole
+
+                FROM auth_role role ORDER BY role.RoleName ASC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <resultMap id="selectByUserIdResult" type="com.lotus.dao.pojo.Role">
+        <result column="RoleId" property="roleid"/>
+        <result column="RoleName" property="rolename"/>
+        <result column="Description" property="description"/>
+    </resultMap>
+
+    <select id="selectByUserId" resultMap="selectByUserIdResult">
+        SELECT
+        role.RoleId, role.RoleName, role.Description
+        FROM
+        auth_role_user ru
+        LEFT JOIN auth_role role ON ru.RoleId = role.RoleId
+        WHERE
+        ru.UserId = #{userId, jdbcType=INTEGER}
+    </select>
+
+    <insert id="insertRolePermission">
+        INSERT INTO auth_permission_role (RoleId, PermissionId) VALUES
+        <foreach collection="permissionIds" item="permissionId" index="index" separator=",">
+            (#{roleId, jdbcType=INTEGER}, #{permissionId, jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <delete id="deleteRoleUser">
+        DELETE FROM auth_role_user WHERE RoleId = #{roleId,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteRolePermission">
+        DELETE FROM auth_permission_role WHERE RoleId = #{roleId,jdbcType=INTEGER}
+    </delete>
+
+</mapper>

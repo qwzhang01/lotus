@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.lotus</groupId>
+    <artifactId>lotus</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <jdk.version>1.8</jdk.version>
+        <!--<spring.version>5.0.2.RELEASE</spring.version>-->
+        <spring.version>4.3.10.RELEASE</spring.version>
+        <jackson.version>2.9.3</jackson.version>
+        <dubbo.version>2.5.8</dubbo.version>
+    </properties>
+
+    <modules>
+        <module>lotus_api</module>
+        <module>lotus_dao</module>
+        <module>lotus_common</module>
+        <module>lotus_server</module>
+        <module>lotus_web</module>
+        <module>lotus_rpc_api</module>
+        <module>lotus_rpc_service</module>
+    </modules>
+    <name>lotus</name>
+
+    <!-- 使用aliyun maven -->
+    <repositories>
+        <repository>
+            <id>aliyun</id>
+            <name>aliyun</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
+
+</project>

@@ -1,0 +1,63 @@
+<aside class="main-sidebar">
+    <section class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="jpress_block"></li>
+            <li class="treeview" id="dashboard"><a href="/"> <i
+                    class="fa fa-dashboard"></i> <span>工作面板</span>
+            </a></li>
+            <li class="jpress_block"></li>
+
+            <%if(ShiroMethod.hasPermission("内容")){%>
+            <li class="treeview ${array.contain(['audio', 'album', 'article'],current)? 'active'}"><a href="#"><i
+                    class="fa fa-file-text-o"></i><span>内容</span><i
+                    class="fa fa-angle-left pull-right"></i></a>
+                <ul class="treeview-menu">
+                    <%if(ShiroMethod.hasPermission("文章")){%>
+                    <li ${current==
+                    "article"?"class='active'"}><a href="/article/list">文章</a></li>
+                    <%} if(ShiroMethod.hasPermission("专辑")){%>
+                    <li ${current==
+                    "album"?"class='active'"}><a href="/album/list">专辑</a></li>
+                    <%} if(ShiroMethod.hasPermission("曲目")){%>
+                    <li ${current==
+                    "audio"?"class='active'"}><a href="/audio/list">曲目</a></li>
+                    <%}%>
+                </ul>
+            </li>
+            <li class="jpress_block"></li>
+            <%} if(ShiroMethod.hasPermission("用户")){%>
+            <li class="treeview ${array.contain(['user', 'role'],current)? 'active'}"><a href="#"><i
+                    class="fa fa-user"></i><span>用户</span><i
+                    class="fa fa-angle-left pull-right"></i></a>
+                <ul class="treeview-menu">
+                    <%if(ShiroMethod.hasPermission("用户管理")){%>
+                    <li ${current==
+                    "user"?"class='active'"}><a href="/user/list">用户管理</a></li>
+                    <%} if(ShiroMethod.hasPermission("角色管理")){%>
+                    <li ${current==
+                    "role"?"class='active'"}><a href="/role/list">角色管理</a></li>
+                     <%}%>
+                </ul>
+            </li>
+            <li class="jpress_block"></li>
+            <%} if(ShiroMethod.hasPermission("设置")){%>
+            <li class="treeview ${array.contain(['param', 'option', 'set'],current)? 'active'}"><a href="#"><i
+                    class="fa fa-wrench"></i><span>设置</span><i
+                    class="fa fa-angle-left pull-right"></i></a>
+                <ul class="treeview-menu">
+                    <%if(ShiroMethod.hasPermission("参数")){%>
+                    <li ${current==
+                    "param"?"class='active'"}><a href="/param/list">参数</a></li>
+                    <%} if(ShiroMethod.hasPermission("配置")){%>
+                    <li ${current==
+                    "option"?"class='active'"}><a href="/option/list">配置</a></li>
+                    <%} if(ShiroMethod.hasPermission("设置引导页")){%>
+                    <li ${current=="set"?"class='active'"}><a href="/set/splash">设置引导页</a></li>
+                    <%}%>
+                </ul>
+            </li>
+            <li class="jpress_block"></li>
+            <%}%>
+        </ul>
+    </section>
+</aside>

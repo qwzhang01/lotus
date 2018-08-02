@@ -1,0 +1,158 @@
+<%var jsPart={%>
+<script src="/static/plugins/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+<script src="/static/plugins/bootstrapvalidator/js/initValid.js"></script>
+<script type="text/javascript">
+     $(function(){
+        validateFieldUtil({
+             username: {
+                    message: 'The username is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '用户名不能为空'
+                        },
+                        stringLength: {
+                            min: 5,
+                            max: 30,
+                            message: '用户名的长度在5到30个字符'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-Z0-9_\.]+$/,
+                            message: '用户名只能是英文字母和数字'
+                        },
+                        remote: {
+                            url: '/user/valid?userId=${user.userid!}',
+                            message: '用户名已存在，请重新输入'
+                        }
+                    }
+                },
+                realname: {
+                    message: 'The username is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '用户姓名不能为空'
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 30,
+                            message: '用户姓名的长度在1到30个字符'
+                        }
+                    }
+                },
+                contactway:{
+                    message: 'The username is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '联系方式不能为空'
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 30,
+                            message: '联系方式的长度在1到30个字符'
+                        },
+                        regexp: {
+                            regexp: /(\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/,
+                            message: '手机号码格式错误'
+                        }
+                    }
+                },
+                roleId: {
+                    message: 'The username is not valid',
+                    validators: {
+                        notEmpty: {
+                            message: '至少选择一个用户角色'
+                        }
+                    }
+                }
+            }, $('#userForm'));
+    });
+
+
+</script>
+<%};%>
+<%var cssPart={%>
+<link rel="stylesheet" href="/static/plugins/bootstrapvalidator/css/bootstrapValidator.min.css">
+<style type="text/css"></style>
+<%};%>
+<% layout("/common/layout.html",{position:"用户管理", jsPart:jsPart,
+cssPart:cssPart}){ %>
+<section class="content">
+    <form action="/user/save" method="post" id="userForm">
+        <input type="hidden" name="id" value="${role.roleid!}">
+        <div class="col-xs-12 ">
+            <div class="row">
+                <h4 class="jp-set-pad jp-set-title">用户信息</h4>
+                <ul class="list-unstyled">
+                    <li class="jp-set-pad">
+                        <div class="col-sm-3 jp-common-pad  jp-set-info">用户名 (必填)：</div>
+                        <div class="col-sm-9 jp-common-pad ">
+                            <input type="hidden" name="userid" value="${user.userid!}"/>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input class="form-control input-md" type="text" name="username"
+                                           value="${user.username! }">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clr"></div>
+                    </li>
+                    <li class="jp-set-pad">
+                        <div class="col-sm-3 jp-common-pad  jp-set-info">用户姓名(必填)：</div>
+                        <div class="col-sm-9 jp-common-pad ">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input class="form-control input-md" type="text" name="realname"
+                                           value="${user.realname! }">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clr"></div>
+                    </li>
+                    <li class="jp-set-pad">
+                        <div class="col-sm-3 jp-common-pad  jp-set-info">联系方式(必填)：</div>
+                        <div class="col-sm-9 jp-common-pad ">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input class="form-control input-md" type="text" name="contactway"
+                                           value="${user.contactway! }">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clr"></div>
+                    </li>
+                </ul>
+            </div>
+            <div class="row">
+                <h4 class="jp-set-pad jp-set-title">用户角色</h4>
+                <ul class="list-unstyled">
+                    <li class="jp-set-pad">
+
+                        <div class="col-sm-3 jp-common-pad  jp-set-info">角色(必选)：</div>
+                        <div class="col-sm-9 jp-common-pad ">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <%for(role in roleList!){%>
+                                    <div style="width: 33%; float: left">
+                                        <label>
+                                            <input type="checkbox" class="cbRole" name="roleId"
+                                                   ${1==role.hasRole!? "checked='checked'"}
+                                            value="${role.roleId!}" />
+                                            ${role.roleName}</label>
+                                    </div>
+                                    <%if(roleLP.index%3==0){%><br><%}%><%}%>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clr"></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <input type="submit" class="btn btn-primary" value="保存更改"/>
+            </div>
+        </div>
+    </form>
+</section>
+<% } %>

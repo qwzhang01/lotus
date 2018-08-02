@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <% include("/common/layout_meta.html"){} %>
+    <title>${appTitle!}</title>
+    <% include("/common/layout_css.html"){} %>
+    <link rel="stylesheet" href="/static/plugins/bootstrapvalidator/css/bootstrapValidator.min.css">
+    <style type="text/css">
+        .form-control-feedback{
+            right: 10px !important;
+        }
+    </style>
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <a href="#"><b>${appTitle!}</b></a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="login-box-body">
+        <p class="login-box-msg">管理员登录</p>
+
+        <form action="/login" method="post" id="loginform">
+            <div class="form-group has-feedback">
+                <label>用户名：</label>
+                <input class="form-control" type="text" name="username" placeholder="请再此处输入用户名"/>
+                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <label>密码：</label>
+                <input class="form-control" type="password" name="password" placeholder="请再此处输入密码">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="form-group">
+                <label>验证码：</label>
+                <div class="row">
+                    <div class="col-xs-8">
+                        <input class="form-control" type="text" name="captcha" placeholder="请输入验证码">
+                    </div>
+                    <div class="col-xs-4" style="padding-left: 0%;">
+                        <img id="captchaImage" src="/captcha"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-8">
+                    <!--
+                    <div class="form-group checkbox">
+                        <label> <input type="checkbox" name="remberMe">
+                            记住我的登录信息
+                        </label>
+                    </div>
+                    -->
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <input type="submit" class="btn btn-primary btn-block btn-flat" value="登录"/>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+        <!-- /.social-auth-links -->
+
+    </div>
+    <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+<% include("/common/layout_js.html"){} %>
+<script src="/static/plugins/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+<script src="/static/plugins/bootstrapvalidator/js/initValid.js"></script>
+<script type="application/javascript">
+    $(function () {
+        $('#captchaImage').click(function () {
+            $('#captchaImage').attr("src", "/captcha?timestamp=" + (new Date()).valueOf());
+        });
+        validateFieldUtil({
+            username: {
+                message: 'The username is not valid',
+                validators: {
+                    notEmpty: {
+                        message: '用户名不能为空'
+                    },
+                    stringLength: {
+                        min: 5,
+                        max: 30,
+                        message: '用户名的长度在5到30个字符'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z0-9_\.]+$/,
+                        message: '用户名只能是英文字母和数字'
+                    }
+                }
+            },
+            password: {
+                validators: {
+                    notEmpty: {
+                        message: '密码不能为空'
+                    }
+                }
+            },
+            captcha: {
+                validators: {
+                    notEmpty: {
+                        message: '验证码不能为空'
+                    },
+                    stringLength: {
+                        min: 4,
+                        max: 4,
+                        message: '验证码长度位6个字符'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z0-9_\.]+$/,
+                        message: '用户名只能是英文字母和数字'
+                    }
+                }
+            }
+        }, $('#loginform'));
+    });
+</script>
+</body>
+</html>

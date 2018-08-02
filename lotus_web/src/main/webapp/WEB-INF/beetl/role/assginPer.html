@@ -1,0 +1,136 @@
+<%var jsPart={%>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/js/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/js/locales/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="/static/plugins/bootstrap_table/initBootstrap_table.js?v=0.2"></script>
+<script type="text/javascript">
+var $listTabId = $("#per_searchTable");
+$(function () {
+    initPageList($listTabId, {
+        url: "/role/per_page/${roleId!}",
+        pagination: false,
+        sidePagination: 'client',
+        onCheckAll: function(rows){
+            $('input[name="permissionId"]').each(function(){
+                $(this).prop("checked", true);
+            });
+        },
+        onUncheckAll: function(rows){
+            $('input[name="permissionId"]').each(function(){
+                $(this).prop("checked", false);
+            });
+        },
+        onCheck: function(row, $element){
+            $element.parent().parent().find('input[name="permissionId"]').each(function(){
+                $(this).prop("checked", true);
+            });
+        },
+        onUncheck: function(row, $element){
+            $element.parent().parent().find('input[name="permissionId"]').each(function(){
+                $(this).prop("checked", false);
+            });
+        },
+        onPostBody:function(data){
+            initCheck();
+        }
+    });
+});
+
+function initCheck(){
+    $("#per_searchTable tbody tr").each(function() {
+        var index = $(this).children('td').eq(0).children('input').attr("data-index");
+        if(typeof(index)!="undefined"){
+            var checked = $(this).find(":checkbox[name='permissionId']").not("input:checked").length == 0;
+            if(checked){
+               $(this).children('td').eq(0).children('input').prop("checked", true);
+            }else{
+                $(this).children('td').eq(0).children('input').prop("checked", false);
+            }
+        }
+    });
+    var iChecked = $("#per_searchTable").find(":checkbox[name='btSelectItem']").not("input:checked").length == 0;
+    if(iChecked){
+        $('input[name="btSelectAll"]').prop("checked", true);
+    }else{
+        $('input[name="btSelectAll"]').prop("checked", false);
+    }
+}
+
+function columsName(value, item, index){
+    return item.menu + '-' + item.subMenu
+}
+
+function permissionDetail(value, item, index){
+    var ps = item.permissionDetail.split(',');
+    var html = ""
+    for (var i = 0; i < ps.length; i++) {
+        var pTip = ps[i].split('|');
+        html += '<label class="permissions-list"> <input type="checkbox" name="permissionId" value="'
+                + pTip[1] + '"';
+        if (parseInt(pTip[2]) == 1) {
+            html += ' checked="checked" ';
+        }
+        html += ' onchange="initCheck(this)" >' + pTip[0]  + "</label>";
+    }
+    return html;
+}
+function submitFn(){
+    $.ajax({
+         type: "POST",
+         url: "/role/saveAssign",
+         data: $('#assignPerForm').serialize(),
+         dataType: "json",
+         async:false,
+         success: function(data){
+            //var notification = initAlertify(data.message, 0 == data.errorCode);
+             parent.closeLayerFn(data);
+             if(0 == data.errorCode){
+                closeFu();
+            }
+         }
+     });
+    return false;
+}
+
+function closeFu(){
+    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+    parent.layer.close(index); //
+}
+
+
+
+
+</script>
+<%};%>
+<%var cssPart={%>
+<link type="text/css" rel="stylesheet" href="/static/plugins/bootstrap_table/css/bootstrap-table.min.css"/>
+<style type="text/css">
+ #per-div {
+    margin:3%;
+ }
+
+
+
+</style>
+<%};%>
+<% layout("/common/frame_layout.html",{jsPart:jsPart, cssPart:cssPart}){ %>
+<form action="/role/saveAssign" method="post" id="assignPerForm">
+    <input type="hidden" name="roleId" value="${roleId!}"/>
+    <div class="box-body jp-common-pad" id="per-div">
+        <table id="per_searchTable">
+            <thead>
+            <tr>
+                <th data-checkbox="true" data-width="5%"></th>
+                <th data-formatter="indexNum" data-title="" data-align="center" data-width="5%"></th>
+                <th data-formatter="columsName" data-title="栏目名称" data-width="35%"></th>
+                <th data-formatter="permissionDetail" data-title="权限名称"></th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="col-xs-12">
+        <button class="btn btn-block btn-primary jp-submiti-button" style="float:right;margin-left:1%;"
+                onclick="return submitFn();">保存更改
+        </button>
+    </div>
+</form>
+<% } %>

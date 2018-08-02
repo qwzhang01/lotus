@@ -1,0 +1,231 @@
+<%var jsPart={%>
+<script type="text/javascript">
+
+</script>
+<%};%>
+<%var cssPart={%>
+<style type="text/css">
+    p {
+        line-height: 300%;
+        text-indent: 2em;
+    }
+</style>
+<%};%>
+<% layout("/common/layout.html",{position:"", jsPart:jsPart,
+cssPart:cssPart}){ %>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12" style="margin: 1% auto;">
+            <br />
+            <h2 class="text-center">${appTitle!}管理系统使用说明</h2>
+            <br /><br />
+            <h3>1 简介</h3>
+            <p class="text-left text-justify	 text-capitalize">
+                本系统是菩提心随身电台APP后台管理系统，为APP提供文章、专辑、曲目以及系统设置。主要功能模块及主界面图如下：
+            </p>
+            <h4>1.1 功能模块</h4>
+        </div>
+        <div class="col-md-10" style="padding-left: 5%; width: 100%; background-color: #F7F7F7;">
+            <dl>
+                <dt><a href="#content">内容</a></dt>
+                <dd class="list-unstyled">
+                    <li>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#article">文章</a></li>
+                    <li>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#album">专辑</a></li>
+                    <li>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#audio">曲目</a></li>
+                </dd>
+                </li>
+                <dt><a href="#auth">用户</a></dt>
+                <dd class="list-unstyled">
+                    <li>&nbsp;&nbsp;&nbsp;&nbsp;用户管理</li>
+                    <li>&nbsp;&nbsp;&nbsp;&nbsp;角色管理</li>
+                </dd>
+                </li>
+                <dt><a href="#setting">设置</a></dt>
+                <dd class="list-unstyled">
+                    <li>&nbsp;&nbsp;&nbsp;&nbsp;参数</li>
+                    <li>&nbsp;&nbsp;&nbsp;&nbsp;配置</li>
+                    <li>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#set_index">设置引导页</a></li>
+                </dd>
+                </li>
+            </dl>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <h4>1.2 主界面图</h4>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/index.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <h3 id="content">2 内容管理</h3>
+            <p class="text-left text-justify	 text-capitalize">
+                包括文章、专辑、曲目三个功能模块，对菩提心随身听APP显示的文章、专辑等进行设置。
+            </p>
+            <h4 id="article">2.1 文章管理</h4>
+            <p class="text-left text-justify	 text-capitalize">
+                管理文章，对文章进行列表查看、新增、编辑、发布、排序、置顶、删除、搜索，具体如下：
+            </p>
+            <span style="font-weight:bold;">2.1.1 文章列表页面</span>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/article.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-10" style="padding-left: 5%; width: 100%; background-color: #F7F7F7;">
+            <dl>
+                <dt>列表功能按钮介绍：</dt>
+                <dd>发布/撤销发布：控制文章是否在APP显示，发状态的文章在APP显示，撤销发布后APP不显示；</dd>
+                <dd>置顶/不置顶：置顶状态的文章显示在APP轮播面板里面；</dd>
+                <dd>上移/下移：排序设置文章在APP的显示顺序。</dd>
+            </dl>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <span style="font-weight:bold;">2.1.2 文章编辑页面</span>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/article_form.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-10" style="padding-left: 5%; width: 100%; background-color: #F7F7F7;">
+            <dl>
+                <dt>上传文章封面介绍：</dt>
+                <dd>点击上传封面按钮，弹出如下上传界面，在上传界面中点击选择文件选择上传文件或将上传的图片拖至上传区域，文件开始上传。</dd>
+                <dd>等文件上传区域颜色转为淡绿色时，文件上传成功，点击“确定”按钮，返回文章编辑页面，如果上传正常即可在编辑页面看到上传的图片。</dd>
+            </dl>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/upload.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <span style="font-weight:bold;">2.1.3 文章查看页面</span>
+            <p class="text-left text-justify	 text-capitalize">查看页面预览文章在APP显示效果。同时可以用手机扫描二维码，预览页面在手机上的显示效果。</p>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/article_detail.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <h4 id="album">2.2 专辑管理</h4>
+            <p class="text-left text-justify	 text-capitalize">
+                管理专辑，对专辑进行列表查看、新增、编辑、发布、排序、置顶、删除、搜索，具体如下：
+            </p>
+            <span style="font-weight:bold;">2.2.1 专辑列表页面</span>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/album.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-10" style="padding-left: 5%; width: 100%; background-color: #F7F7F7;">
+            <dl>
+                <dt>列表功能按钮介绍：</dt>
+                <dd>专辑列表功能按钮与文章列表功能按钮一致；</dd>
+                <dd>专辑排序功能是在栏目内排序，跨栏目排序对APP显示没有影响，因此专辑列表的排序功能在搜索使选中栏目才会显示。</dd>
+            </dl>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <span style="font-weight:bold;">2.2.2 专辑编辑页面</span>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/album_form.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-10" style="padding-left: 5%; width: 100%; background-color: #F7F7F7;">
+            <dl>
+                <dt>添加音频介绍：</dt>
+                <dd>点击编辑页面的“添加音频”按钮，弹出如下曲目列表，选中需要添加的曲目或文件夹，点击“确定”，即可将曲目加入对应的专辑；</dd>
+                <dd>确定专辑音频后，点击“保存更改”，APP就可以播放对应专辑。</dd>
+            </dl>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/album_form_audio.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <span style="font-weight:bold;">2.2.3 专辑查看页面</span>
+            <p class="text-left text-justify	 text-capitalize">查看页面功能与文章管理查看页面功能一致。</p>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <h4 id="audio">2.3 曲目管理</h4>
+            <p class="text-left text-justify	 text-capitalize">管理曲目，包括曲目列表查看、曲目搜索、音频上传、曲目信息编辑、设置缩略图、曲目所属文件夹管理等功能。具体如下：</p>
+            <span style="font-weight:bold;">2.3.1 曲目列表页面</span>
+            <p class="text-left text-justify	 text-capitalize">曲目列表页面功能包括：新建文件夹、编辑文件夹、删除文件夹，上传曲目、曲目列表搜索、编辑曲目信息、设置曲目缩略图、查看曲目、删除曲目。具体如下图所示：</p>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/audio_list.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-10" style="padding-left: 5%; width: 100%; background-color: #F7F7F7;">
+            <dl>
+                <dt>列表功能介绍：</dt>
+                <dd>列表文件夹导航功能：进入子文件夹后，可以点击列头导航，跳转至任意一级父文件夹中；</dd>
+                <dd>删除文件夹：删除文件夹时，会删除文件夹所有子文件夹及文件；</dd>
+                <dd>曲目及文件夹命名：文件夹或曲目重名时，系统自动在名称后面补序号；</dd>
+                <dd>列表搜索功能：搜索时只针对曲目有效，同时对搜索出的曲目可以跳转到曲目所属文件夹。</dd>
+            </dl>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <span style="font-weight:bold;">2.3.2 编辑/新建文件夹</span>
+            <p class="text-left text-justify	 text-capitalize">点击列表中“新建文件夹”、“编辑文件夹名称”按钮，可弹出如下编辑文件夹界面，编辑好文件夹名称后点击“确定”按钮，即可新建/编辑文件夹。</p>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/folder.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <span style="font-weight:bold;">2.3.3 上传曲目</span>
+            <p class="text-left text-justify	 text-capitalize">点击列表中的“上传曲目”按钮，弹出入下图所示的曲目上传面板。</p>
+            <p class="text-left text-justify	 text-capitalize">点击“选择文件”按钮，选择上传的曲目后曲目开始上传，上传中的曲目显示上传进度条。等所有曲目上传完成后，点击“确定”按钮，完成上传并返回曲目列表页面。</p>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/upload_audio.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <span style="font-weight:bold;">2.3.4 编辑曲目信息</span>
+            <p class="text-left text-justify	 text-capitalize">点击列表中的“编辑曲目信息”按钮，弹出如下图的曲目信息编辑面板，编辑好相关信息后点击“确定”按钮，即可保存。</p>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/audio_form.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <span style="font-weight:bold;">2.3.5 设置曲目缩略图</span>
+            <p class="text-left text-justify	 text-capitalize">设置缩略图同文章上传封面。</p>
+            <span style="font-weight:bold;">2.3.6 曲目信息查看</span>
+            <p class="text-left text-justify	 text-capitalize">曲目信息查看页面可以查看曲目基本信息，试听曲目以及查看曲目缩略图。</p>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/audio_detail.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <h3 id="auth">3 用户管理</h3>
+            <p class="text-left text-justify	 text-capitalize">用户管理为系统维护人员使用。</p>
+            <h3 id="setting">4 设置管理</h3>
+            <p class="text-left text-justify	 text-capitalize">其中参数、配置功能为系统维护人员使用。设置引导页设置APP启动页面图片。</p>
+            <h4 id="set_index">4.1 设置引导页</h4>
+        </div>
+        <div class="col-md-10">
+            <img src="/static/admin/image/help/set_index.png" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-10" style="padding-left: 5%; width: 100%; background-color: #F7F7F7;">
+            <dl>
+                <dt>备注：</dt>
+                <dd>上传方式同文章上传封面。</dd>
+            </dl>
+        </div>
+        <div class="col-md-12" style="margin: 1% auto;">
+            <h3>5 其他</h3>
+            <p class="text-left text-justify	 text-capitalize">使用中如有任何问题，请联系：</p>
+            <div class="col-md-3">
+                <p>郝鹏斌</p>
+                <p>手机：<abbr title="Phone">13530219163</abbr></p>
+                <p>微信：<abbr title="Phone">13530219163</abbr></p>
+            </div>
+            <div class="col-md-3">
+                <p>袁桂喜</p>
+                <p>手机：<abbr title="Phone">18312481988</abbr></p>
+                <p>微信：<abbr title="Phone">18312481988</abbr></p>
+            </div>
+            <div class="col-md-3">
+                <p>张奇文</p>
+                <p>手机：<abbr title="Phone">13994219417</abbr></p>
+                <p>微信：<abbr title="Phone">13994219417</abbr></p>
+            </div>
+        </div>
+        <div class="col-md-4 col-md-offset-6" style="margin: 1% auto;float: right;">
+            <p>菩提心随身电台开发小组</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;2017年11月24日</p>
+        </div>
+    </div>
+</div>
+<% } %>
+

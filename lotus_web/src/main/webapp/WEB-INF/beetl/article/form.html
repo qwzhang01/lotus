@@ -1,0 +1,252 @@
+<%var jsPart={%>
+<script src="/static/plugins/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+<script src="/static/plugins/bootstrapvalidator/js/initValid.js"></script>
+<script src="/static/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+    var fileData = {
+        path : '',
+        alt : ''
+    };
+    $(function () {
+        //初始化富文本编辑器
+        initTinymce();
+        //前端表单校验
+        validateFieldUtil({
+            title: {
+                message: 'The username is not valid',
+                validators: {
+                    notEmpty: {
+                        message: '文章标题不能为空'
+                    },
+                    stringLength: {
+                        min: 1,
+                        max: 50,
+                        message: '文章标题的长度在1到50个字符'
+                    }
+                }
+            }, source: {
+                message: 'The username is not valid',
+                validators: {
+                    notEmpty: {
+                        message: '文章来源不能为空'
+                    },
+                    stringLength: {
+                        min: 1,
+                        max: 50,
+                        message: '文章来源的长度在1到50个字符'
+                    }
+                }
+            }, taxonomyId: {
+                message: 'The username is not valid',
+                validators: {
+                    notEmpty: {
+                        message: '所在栏目不能为空'
+                    }
+                }
+            }
+        }, $('#form'));
+    });
+    function doSelectThumbnail(imgId, inputId) {
+		layer.open({
+			type : 2,
+			title : '上传图片',
+			shadeClose : true,
+			shade : 0.8,
+			area : [ '92%', '90%' ],
+			content : '/upload/img',
+			end : function() {
+				if ('' != fileData.path && null != fileData.path) {
+					$("#" + imgId).attr("src", "${param('qiniu_path')}/" + fileData.path);
+					$("#" + inputId).attr("value", fileData.path);
+				}
+			}
+		});
+	}
+
+	function doRemoveThumbnail(imgId, inputId) {
+		$("#" + imgId).attr("src", "/static/admin/image/nothumbnail.jpg");
+		$("#" + inputId).val("");
+	}
+
+    function initTinymce() {
+        tinymce
+            .init({
+                selector : '#content_text',
+                height : 365,
+                language : 'zh_CN',
+                menubar : false,
+                automatic_uploads : true,
+                paste_data_images : true,
+                convert_urls : false,
+                relative_urls : false,
+                imagetools_toolbar : "rotateleft rotateright | flipv fliph | editimage imageoptions",
+                imagetools_proxy : '/admin/tinymce/image/proxy',
+                images_upload_url : '/admin/tinymce/image/upload',
+                wordcount_countregex : /[\u4e00-\u9fa5_a-zA-Z0-9]/g,
+                file_picker_callback : function(callback, value, meta) {
+                    layer.open({
+                        type : 2,
+                        title : '上传图片',
+                        shadeClose : true,
+                        shade : 0.8,
+                        area : [ '92%', '90%' ],
+                        content : '/upload/img',
+                        end : function() {
+                            if ('' != fileData.path && null != fileData.path) {
+                                callback("${param('qiniu_path')}/" + fileData.path, {
+                                    alt : fileData.alt
+                                });
+                            }
+                        }
+                    });
+                },
+                plugins : [
+                    "advlist autolink autosave link image media imagetools lists charmap print preview hr anchor pagebreak spellchecker",
+                    "searchreplace wordcount visualblocks visualchars code codesample fullscreen insertdatetime media nonbreaking",
+                    "table contextmenu directionality emoticons template textcolor paste fullpage textcolor colorpicker textpattern" ],
+                toolbar1 : '  bold italic underline strikethrough removeformat | blockquote hr table image media codesample | anchor link   unlink | alignleft aligncenter alignright alignjustify | bullist numlist     ',
+                toolbar2 : '  formatselect | outdent indent | forecolor backcolor  |  undo redo | code  fullscreen',
+            });
+    }
+
+
+</script>
+<%};%>
+<%var cssPart={%>
+<link rel="stylesheet" href="/static/plugins/bootstrapvalidator/css/bootstrapValidator.min.css">
+<style type="text/css">
+
+</style>
+<%};%>
+<% layout("/common/layout.html",{position:"文章管理", jsPart:jsPart, cssPart:cssPart}){ %>
+<form action="/article/save" id="form" method="post" class="form-horizontal">
+    <input type="hidden" name="id" value="${content.id!}"/>
+    <div class="row">
+        <!-- /.col -->
+        <div class="col-md-9">
+            <!-- /.box -->
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">文章信息</h3>
+                </div>
+                <div class="box-body jp-content-select-box">
+                    <div class="form-group">
+                        <label for="title" class="col-sm-2 control-label"><span
+                                style="color: red">*&nbsp;</span>文章标题</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="title" name="title" value="${content.title!}"
+                                   placeholder="在此输入标题">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="source" class="col-sm-2 control-label"><span
+                                style="color: red">*&nbsp;</span>文章来源</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="source" name="source" value="${content.source!}"
+                                   placeholder="在此输入来源">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="taxonomyId" class="col-sm-2 control-label"><span style="color: red">*&nbsp;</span>所属栏目</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="taxonomyId" name="taxonomyId">
+                                <option value="">请选择文章所属栏目</option>
+                                <%for(var item in column){%>
+                                <option value="${item.id}" ${item.id== content.taxonomyId! ?
+                                'selected="selected"':''}>${item.title}</option>
+                                <%}%>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="summary" class="col-sm-2 control-label">文章简介</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" rows="3" id="summary" name="summary" placeholder="在此输入文章简介">${content.summary!}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="box box-solid">
+                                <div class="box-body no-padding">
+                                    <textarea id="content_text" name="text">${content.text!}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-md-3">
+            <div class="box box-solid">
+                <!-- /.box -->
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">置顶</h3>
+                        <div class="box-tools">
+                            <button type="button" class="btn btn-box-tool"
+                                    data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body jp-content-select-box">
+                        <div class="col-md-10">
+                            <label> <input name="isStick" type="radio" ${1==content.isStick!0?"checked='checked'"}
+                                           value="1"/>
+                                置顶
+                            </label>
+                            <label> <input name="isStick" type="radio" ${1!=content.isStick!0?"checked='checked'"}
+                                           value="0"/>
+                                不置顶
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box -->
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">文章封面</h3>
+                        <div class="box-tools">
+                            <button type="button" class="btn btn-box-tool"
+                                    data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body no-padding">
+                        <ul class="nav ">
+                            <li class="">
+                                <div class="jp-content-thumbnail-box">
+                                    <img src="${isNotEmpty(content.thumbnail)? param('qiniu_path') + '/' + content.thumbnail : '/static/admin/image/nothumbnail.jpg'}"
+                                         id="thumbnail"
+                                         class="jp-content-thumbnail"/>
+                                    <input type="hidden" name="thumbnail" value="${content.thumbnail! }"
+                                           id="content_thumbnail">
+                                </div>
+                                <div class="clr"></div>
+                            </li>
+                            <li class="jp-release-set jp-borde-top">
+                                <button type="button" class="btn btn-default btn-sm"
+                                        onclick="doSelectThumbnail('thumbnail', 'content_thumbnail')">上传封面
+                                </button>
+                                <a
+                                        href="javascript:;" style="display: inline;"
+                                        onclick="doRemoveThumbnail('thumbnail', 'content_thumbnail')">移除封面</a>
+                                <div class="clr"></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <input type="submit" class="btn btn-primary" value="保存更改"/>
+        </div>
+    </div>
+</form>
+<% } %>
+

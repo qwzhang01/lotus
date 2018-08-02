@@ -1,0 +1,50 @@
+<link rel="stylesheet" href="/static/plugins/bootstrapvalidator/css/bootstrapValidator.min.css">
+<script src="/static/plugins/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+<script src="/static/plugins/bootstrapvalidator/js/initValid.js"></script>
+<script type="text/javascript">
+     $(function(){
+        validateFieldUtil({
+             title: {
+                validators: {
+                    notEmpty: {
+                        message: '曲目标题不能为空'
+                    },
+                    stringLength: {
+                        min: 1,
+                        max: 20,
+                        message: '曲目标题长度在1到20之间'
+                    }
+                }
+            }
+         }, $('#form2'));
+    });
+
+
+</script>
+<form action="/audio/update" method="post" id="form2">
+    <div class="col-sm-12" style="margin: 2% auto;">
+        <input type="hidden" name="id" value="${audio.id!}"/>
+        <ul class="list-unstyled">
+            <li class="jp-set-pad">
+                <span>曲目标题:</span>
+                <div class="form-group">
+                    <input class="form-control input-md" type="text" name="title" value="${audio.title!}"
+                           placeholder="请输入曲目名称"/>
+                </div>
+            </li>
+            <li class="jp-set-pad">
+                <span>曲目作者:</span>
+                <div class="form-group">
+                    <input class="form-control input-md" type="text" name="author" value="${audio.author!}"
+                           placeholder="请输入曲目作者"/>
+                </div>
+            </li>
+            <li class="jp-set-pad">
+                <span>曲目简介:</span>
+                <div class="form-group">
+                    <textarea name="summary" rows="5" maxlength="200" class="form-control">${audio.summary!}</textarea>
+                </div>
+            </li>
+        </ul>
+    </div>
+</form>

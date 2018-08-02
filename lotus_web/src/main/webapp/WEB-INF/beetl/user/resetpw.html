@@ -1,0 +1,64 @@
+<link rel="stylesheet" href="/static/plugins/bootstrapvalidator/css/bootstrapValidator.min.css">
+<script src="/static/plugins/bootstrapvalidator/js/bootstrapValidator.min.js"></script>
+<script src="/static/plugins/bootstrapvalidator/js/initValid.js"></script>
+<script type="text/javascript">
+     $(function(){
+        validateFieldUtil({
+             password: {
+                validators: {
+                    notEmpty: {
+                        message: '密码不能为空'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 30,
+                        message: '密码长度在6到30之间'
+                    },
+                    identical: {
+                        field: 'confirmPassword',
+                        message: '俩次密码输入不一致'
+                    }
+                }
+             },
+             confirmPassword: {
+                validators: {
+                    notEmpty: {
+                        message: '密码不能为空'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 30,
+                        message: '密码长度在6到30之间'
+                    },
+                    identical: {
+                        field: 'password',
+                        message: '俩次密码输入不一致'
+                    }
+                }
+             }
+         },
+        $('#resetpwForm'));
+    });
+
+
+</script>
+<form action="/user/resetpw" method="post" id="resetpwForm">
+    <div class="form-group">
+        <div class="col-md-12" style="margin:1% auto">
+            <div class="input-group">
+                <input class="form-control input-md" type="password" name="password" placeholder="请输入密码"/>
+                <span class="input-group-addon">
+                    <!--<i class="glyphicon glyphicon-eye-open"></i>-->
+                </span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="input-group">
+                <input class="form-control input-md" type="password" name="confirmPassword" placeholder="请再次输入密码"/>
+                <span class="input-group-addon">
+                    <!--<i class="glyphicon glyphicon-eye-open"></i>-->
+                </span>
+            </div>
+        </div>
+    </div>
+</form>
